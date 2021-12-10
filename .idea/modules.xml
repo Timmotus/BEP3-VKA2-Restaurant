@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/BEP3-VKA2-Restaurant.iml" filepath="$PROJECT_DIR$/.idea/BEP3-VKA2-Restaurant.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../ginos/ginos.iml" filepath="$PROJECT_DIR$/../../ginos/ginos.iml" />
+    </modules>
+  </component>
+</project>
