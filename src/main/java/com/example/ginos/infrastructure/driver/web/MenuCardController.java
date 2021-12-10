@@ -38,5 +38,12 @@ public class MenuCardController {
         return this.menuQueryHandler.handle();
     }
 
+//endpoints worden geschreven voor het toevoegen aan de cart en het maken van de order wanner de  cart "klaar"
+//docker compose gebeuren (Rabbitmq en mongo confiugratie)
+//application properties
+//testen van de endpoints
+
+
+
 
 }

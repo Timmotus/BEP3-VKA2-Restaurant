@@ -33,6 +33,10 @@ public class Pizza {
         this.quantity =   quantity;
     }
 
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
     public List<MenuEvent> listEvents() {
         return events;
     }
