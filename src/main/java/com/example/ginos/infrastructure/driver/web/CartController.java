@@ -1,5 +1,7 @@
 package com.example.ginos.infrastructure.driver.web;
 
+
+import com.example.ginos.core.domain.Pizza;
 import com.example.ginos.core.application.MenuCommandHandler;
 import com.example.ginos.core.application.MenuQueryHandler;
 import com.example.ginos.core.application.command.AddToCart;
@@ -24,7 +26,7 @@ public class CartController {
 
     @PostMapping("/add-to-cart")
     public Cart adminAddPizza(@Valid @RequestBody AddToCartRequest request) {
-        return this.menuCommandHandler.handle(new AddToCart(request.customerName, request.selectedPizza, request.quantity, request.finishedOrder));
+        return this.menuCommandHandler.handle(new AddToCart(request.customerName, new Pizza(request.selectedPizza), request.quantity, request.finishedOrder));
     }
 
 }

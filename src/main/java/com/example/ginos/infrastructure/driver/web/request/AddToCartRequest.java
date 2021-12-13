@@ -10,13 +10,12 @@ public class AddToCartRequest {
     @NotBlank
     public String customerName;
 
-    @NotBlank
-    public Pizza selectedPizza;
+
+    public PizzaRequest selectedPizza;
 
     @Positive
     public int quantity;
 
-    @NotBlank
     public boolean finishedOrder;
 
 }
