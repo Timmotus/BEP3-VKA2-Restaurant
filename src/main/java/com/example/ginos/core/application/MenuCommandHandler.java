@@ -8,11 +8,14 @@ import com.example.ginos.core.domain.event.MenuEvent;
 import com.example.ginos.core.port.messaging.MenuEventPublisher;
 import com.example.ginos.core.port.storage.CartRepository;
 import com.example.ginos.core.port.storage.PizzaRepository;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
+@Document
 public class MenuCommandHandler {
 
     private final PizzaRepository pizzaRepository;

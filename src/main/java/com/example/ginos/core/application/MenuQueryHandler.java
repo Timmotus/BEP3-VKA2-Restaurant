@@ -3,11 +3,13 @@ package com.example.ginos.core.application;
 import com.example.ginos.core.application.query.GetPizzaDetailsByName;
 import com.example.ginos.core.domain.Pizza;
 import com.example.ginos.core.port.storage.PizzaRepository;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Document
 public class MenuQueryHandler {
 
     private final PizzaRepository repository;

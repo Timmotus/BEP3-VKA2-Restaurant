@@ -11,7 +11,7 @@ public class AdminAddMenuRequest {
     @NotBlank
     public String name;
 
-    @NotBlank
+
     public List<Ingredient> ingredients;
 
     @Positive

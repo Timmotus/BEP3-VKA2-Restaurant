@@ -31,6 +31,7 @@ public class MenuCardController {
     @GetMapping("/{pizzaname}")
     public Pizza getItemById(@PathVariable String pizzaname) {
         return this.menuQueryHandler.handle(new GetPizzaDetailsByName(pizzaname));
+//      return  "Het werkt";
     }
 
     @GetMapping("/all")

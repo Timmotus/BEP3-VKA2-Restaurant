@@ -11,6 +11,7 @@ public class PizzaRequest {
   @NotBlank
   public String name;
 
+  @NotBlank
   public List<String> ingredients;
 
   @Positive
