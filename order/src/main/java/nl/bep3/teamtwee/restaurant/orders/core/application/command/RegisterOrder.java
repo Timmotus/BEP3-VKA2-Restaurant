@@ -1,39 +1,34 @@
 package nl.bep3.teamtwee.restaurant.orders.core.application.command;
 
+import java.util.HashSet;
 import java.util.Set;
 
-public class RegisterOrder {
-    private final String zipCode;
-    private final String street;
-    private final Integer streetNumber;
-    private final String status;
-    private final Set<String> contents;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-    public RegisterOrder(String zipCode, String street, Integer streetNumber, String status, Set<String> contents) {
+@Getter
+public class RegisterOrder {
+    private String zipCode;
+    private String street;
+    private Integer streetNumber;
+    private Set<RegisterOrderItem> items;
+
+    public RegisterOrder(String zipCode, String street, Integer streetNumber) {
         this.zipCode = zipCode;
         this.street = street;
         this.streetNumber = streetNumber;
-        this.status = status;
-        this.contents = contents;
+        this.items = new HashSet<>();
     }
 
-    public String getZipCode() {
-        return this.zipCode;
+    public void addItem(String name, Integer count, Set<String> options) {
+        this.items.add(new RegisterOrderItem(name, count, options));
     }
 
-    public String getStreet() {
-        return this.street;
-    }
-
-    public Integer getStreetNumber() {
-        return this.streetNumber;
-    }
-
-    public String getStatus() {
-        return this.status;
-    }
-
-    public Set<String> getContents() {
-        return this.contents;
+    @Getter
+    @AllArgsConstructor
+    public class RegisterOrderItem {
+        private String name;
+        private Integer count;
+        private Set<String> options;
     }
 }
