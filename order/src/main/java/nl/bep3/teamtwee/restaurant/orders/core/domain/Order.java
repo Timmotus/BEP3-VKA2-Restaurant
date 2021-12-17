@@ -21,7 +21,7 @@ public class Order {
     private UUID paymentId;
     private String status;
 
-    private Set<String> contents;
+    private Set<OrderItem> items;
 
     @Transient
     private List<OrderEvent> events = new ArrayList<>();
@@ -30,25 +30,11 @@ public class Order {
     public Order() {
     }
 
-    public Order(String zipCode, String street, Integer streetNumber, String status, Set<String> contents) {
+    public Order(String zipCode, String street, Integer streetNumber) {
         this.id = UUID.randomUUID();
         this.zipCode = zipCode;
         this.street = street;
         this.streetNumber = streetNumber;
-        this.status = status;
-        this.contents = contents;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getCompany() {
-        return street;
-    }
-
-    public Set<String> getKeywords() {
-        return contents;
     }
 
     public List<OrderEvent> listEvents() {
@@ -58,4 +44,6 @@ public class Order {
     public void clearEvents() {
         this.events.clear();
     }
+
+    // TODO: make a builder
 }
