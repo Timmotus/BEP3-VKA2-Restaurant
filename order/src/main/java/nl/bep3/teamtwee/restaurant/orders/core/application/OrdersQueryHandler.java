@@ -30,12 +30,6 @@ public class OrdersQueryHandler {
     }
 
     private Sort createSort(String orderBy, String direction) {
-        Sort sort = Sort.by(Sort.Direction.ASC, orderBy);
-
-        if (direction.equals("desc")) {
-            sort = sort.descending();
-        }
-
-        return sort;
+        return Sort.by(Sort.Direction.valueOf(direction), orderBy);
     }
 }
