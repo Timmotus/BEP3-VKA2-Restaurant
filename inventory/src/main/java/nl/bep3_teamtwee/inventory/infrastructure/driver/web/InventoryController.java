@@ -18,9 +18,11 @@ import nl.bep3_teamtwee.inventory.infrastructure.driver.web.request.UpdateIngred
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,11 +60,12 @@ public class InventoryController {
         return ResponseEntity.ok(this.queryHandler.handle(new GetIngredientById(id)));
     }
 
+    @Validated
     @GetMapping(params = {"productName"})
     public ResponseEntity<List<Ingredient>> findItemsByProductName(
             @RequestParam String productName,
             @RequestParam(required = false) String orderBy,
-            @RequestParam(required = false) String direction
+            @RequestParam(required = false) @Pattern(regexp = "asc|desc") String direction
     ) {
         return ResponseEntity.ok(this.queryHandler.handle(new FindIngredientsByProductName(productName, orderBy, direction)));
     }
@@ -114,6 +117,11 @@ public class InventoryController {
     @ExceptionHandler
     public ResponseEntity<String> handleInsufficientStockCapacity(InsufficientStockCapacity exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
     @ExceptionHandler
