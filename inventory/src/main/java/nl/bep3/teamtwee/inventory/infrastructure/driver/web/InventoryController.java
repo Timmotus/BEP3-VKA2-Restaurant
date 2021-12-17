@@ -1,13 +1,11 @@
 package nl.bep3.teamtwee.inventory.infrastructure.driver.web;
 
+import nl.bep3.teamtwee.inventory.core.application.command.*;
 import nl.bep3.teamtwee.inventory.infrastructure.driver.web.request.RegisterIngredientRequest;
+import nl.bep3.teamtwee.inventory.infrastructure.driver.web.request.ReserveIngredientRequest;
 import nl.bep3.teamtwee.inventory.infrastructure.driver.web.request.UpdateIngredientRequest;
 import nl.bep3.teamtwee.inventory.core.application.IngredientsCommandHandler;
 import nl.bep3.teamtwee.inventory.core.application.IngredientsQueryHandler;
-import nl.bep3.teamtwee.inventory.core.application.command.BuyStockForIngredientWithId;
-import nl.bep3.teamtwee.inventory.core.application.command.DeleteIngredient;
-import nl.bep3.teamtwee.inventory.core.application.command.RegisterIngredient;
-import nl.bep3.teamtwee.inventory.core.application.command.UpdateIngredient;
 import nl.bep3.teamtwee.inventory.core.application.query.GetIngredientById;
 import nl.bep3.teamtwee.inventory.core.application.query.FindIngredientsByProductName;
 import nl.bep3.teamtwee.inventory.core.application.query.ListIngredients;
@@ -39,7 +37,7 @@ public class InventoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Ingredient> registerItem(@Valid @RequestBody RegisterIngredientRequest request) {
+    public ResponseEntity<Ingredient> registerIngredient(@Valid @RequestBody RegisterIngredientRequest request) {
         return ResponseEntity.ok(
                 this.commandHandler.handle(
                         new RegisterIngredient(
@@ -56,13 +54,13 @@ public class InventoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Ingredient> getItemById(@PathVariable UUID id) {
+    public ResponseEntity<Ingredient> getIngredientById(@PathVariable UUID id) {
         return ResponseEntity.ok(this.queryHandler.handle(new GetIngredientById(id)));
     }
 
     @Validated
     @GetMapping(params = {"productName"})
-    public ResponseEntity<List<Ingredient>> findItemsByProductName(
+    public ResponseEntity<List<Ingredient>> findIngredientsByProductName(
             @RequestParam String productName,
             @RequestParam(required = false) String orderBy,
             @RequestParam(required = false) @Pattern(regexp = "asc|desc") String direction
@@ -71,7 +69,7 @@ public class InventoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Ingredient>> getItems(
+    public ResponseEntity<List<Ingredient>> getIngredients(
             @RequestParam(required = false) String orderBy,
             @RequestParam(required = false) String direction
     ) {
@@ -79,12 +77,12 @@ public class InventoryController {
     }
 
     @PostMapping("/{id}/stock")
-    public ResponseEntity<Ingredient> buyStockForItemWithId(@PathVariable UUID id) {
+    public ResponseEntity<Ingredient> buyStockForIngredientWithId(@PathVariable UUID id) {
         return ResponseEntity.ok(this.commandHandler.handle(new BuyStockForIngredientWithId(id)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Ingredient> updateItemById(@PathVariable UUID id, @Valid @RequestBody UpdateIngredientRequest request) {
+    public ResponseEntity<Ingredient> updateIngredientById(@PathVariable UUID id, @Valid @RequestBody UpdateIngredientRequest request) {
         return ResponseEntity.ok(
                 this.commandHandler.handle(
                         new UpdateIngredient(
@@ -103,14 +101,20 @@ public class InventoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteItemById(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteIngredientById(@PathVariable UUID id) {
         this.commandHandler.handle(new DeleteIngredient(id));
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/reserve")
+    public ResponseEntity<Void> reserveIngredientGroup(@Valid @RequestBody List<ReserveIngredientRequest> ingredientList) {
+        this.commandHandler.handle(new ReserveIngredients(ingredientList));
         return ResponseEntity.noContent().build();
     }
 
     // Handlers
     @ExceptionHandler
-    public ResponseEntity<String> handleItemNotFound(IngredientNotFound exception) {
+    public ResponseEntity<String> handleIngredientNotFound(IngredientNotFound exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
