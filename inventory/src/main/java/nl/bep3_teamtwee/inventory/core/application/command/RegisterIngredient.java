@@ -1,7 +1,9 @@
 package nl.bep3_teamtwee.inventory.core.application.command;
 
+import lombok.Getter;
 import nl.bep3_teamtwee.inventory.core.domain.Unit;
 
+@Getter
 public class RegisterIngredient {
 
     private final String productName;
@@ -22,31 +24,4 @@ public class RegisterIngredient {
         this.sellPrice = sellPrice;
     }
 
-    public String getProductName() {
-        return productName;
-    }
-
-    public Unit getUnit() {
-        return unit;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public int getPurchaseCapacity() {
-        return purchaseCapacity;
-    }
-
-    public int getSellCapacity() {
-        return sellCapacity;
-    }
-
-    public double getPurchasePrice() {
-        return purchasePrice;
-    }
-
-    public double getSellPrice() {
-        return sellPrice;
-    }
 }

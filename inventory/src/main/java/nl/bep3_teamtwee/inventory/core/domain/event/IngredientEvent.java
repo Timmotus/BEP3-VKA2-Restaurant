@@ -1,20 +1,15 @@
 package nl.bep3_teamtwee.inventory.core.domain.event;
 
+import lombok.Getter;
+
 import java.time.Instant;
 import java.util.UUID;
 
+@Getter
 public abstract class IngredientEvent {
 
     private final UUID eventId = UUID.randomUUID();
     private final Instant eventDate = Instant.now();
-
-    public UUID getEventId() {
-        return eventId;
-    }
-
-    public Instant getEventDate() {
-        return eventDate;
-    }
 
     public abstract String getEventKey();
 

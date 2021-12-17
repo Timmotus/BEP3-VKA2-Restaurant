@@ -1,7 +1,10 @@
 package nl.bep3_teamtwee.inventory.core.application.query;
 
+import lombok.Getter;
+
 import java.util.UUID;
 
+@Getter
 public class GetIngredientById {
 
     private final UUID id;
@@ -10,7 +13,4 @@ public class GetIngredientById {
         this.id = id;
     }
 
-    public UUID getId() {
-        return id;
-    }
 }

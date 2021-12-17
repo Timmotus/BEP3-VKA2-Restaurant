@@ -1,5 +1,8 @@
 package nl.bep3_teamtwee.inventory.core.application.query;
 
+import lombok.Getter;
+
+@Getter
 public class ListIngredients {
 
     private final String orderBy;
@@ -13,11 +16,4 @@ public class ListIngredients {
         this.direction = direction;
     }
 
-    public String getOrderBy() {
-        return orderBy;
-    }
-
-    public String getDirection() {
-        return direction;
-    }
 }

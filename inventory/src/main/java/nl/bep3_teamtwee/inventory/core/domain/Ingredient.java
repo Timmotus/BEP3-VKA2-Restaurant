@@ -1,5 +1,8 @@
 package nl.bep3_teamtwee.inventory.core.domain;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import nl.bep3_teamtwee.inventory.core.domain.event.IngredientEvent;
 import nl.bep3_teamtwee.inventory.core.domain.exception.InsufficientStockCapacity;
 import org.springframework.data.annotation.Id;
@@ -11,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Document
 public class Ingredient {
 
@@ -29,7 +34,7 @@ public class Ingredient {
     private double purchasePrice;
     private double sellPrice;
 
-    @Transient
+    @Transient @Setter(value = AccessLevel.NONE)
     private final List<IngredientEvent> events = new ArrayList<>();
 
     public Ingredient(String productName, Unit unit, int capacity, int purchaseCapacity, int sellCapacity, double purchasePrice, double sellPrice) {
@@ -41,76 +46,6 @@ public class Ingredient {
         this.purchaseCapacity = purchaseCapacity;
         this.sellCapacity = sellCapacity;
         this.purchasePrice = purchasePrice;
-        this.sellPrice = sellPrice;
-    }
-
-    // Getters
-    public UUID getId() {
-        return id;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public Unit getUnit() {
-        return unit;
-    }
-
-    public int getStock() {
-        return stock;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public int getPurchaseCapacity() {
-        return purchaseCapacity;
-    }
-
-    public int getSellCapacity() {
-        return sellCapacity;
-    }
-
-    public double getPurchasePrice() {
-        return purchasePrice;
-    }
-
-    public double getSellPrice() {
-        return sellPrice;
-    }
-
-    // Setters
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public void setUnit(Unit unit) {
-        this.unit = unit;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    public void setPurchaseCapacity(int purchaseCapacity) {
-        this.purchaseCapacity = purchaseCapacity;
-    }
-
-    public void setSellCapacity(int sellCapacity) {
-        this.sellCapacity = sellCapacity;
-    }
-
-    public void setPurchasePrice(double purchasePrice) {
-        this.purchasePrice = purchasePrice;
-    }
-
-    public void setSellPrice(double sellPrice) {
         this.sellPrice = sellPrice;
     }
 

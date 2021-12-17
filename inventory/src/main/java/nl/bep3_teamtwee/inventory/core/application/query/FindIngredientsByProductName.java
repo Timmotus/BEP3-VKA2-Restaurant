@@ -1,5 +1,8 @@
 package nl.bep3_teamtwee.inventory.core.application.query;
 
+import lombok.Getter;
+
+@Getter
 public class FindIngredientsByProductName {
 
     private final String productName;
@@ -14,15 +17,4 @@ public class FindIngredientsByProductName {
         this.direction = direction;
     }
 
-    public String getProductName() {
-        return productName;
-    }
-
-    public String getOrderBy() {
-        return orderBy;
-    }
-
-    public String getDirection() {
-        return direction;
-    }
 }

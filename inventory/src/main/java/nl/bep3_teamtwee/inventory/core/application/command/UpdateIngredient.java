@@ -1,9 +1,11 @@
 package nl.bep3_teamtwee.inventory.core.application.command;
 
+import lombok.Getter;
 import nl.bep3_teamtwee.inventory.core.domain.Unit;
 
 import java.util.UUID;
 
+@Getter
 public class UpdateIngredient {
 
     private final UUID id;
@@ -28,39 +30,4 @@ public class UpdateIngredient {
         this.sellPrice = sellPrice;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public int getStock() {
-        return stock;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public Unit getUnit() {
-        return unit;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public int getPurchaseCapacity() {
-        return purchaseCapacity;
-    }
-
-    public int getSellCapacity() {
-        return sellCapacity;
-    }
-
-    public double getPurchasePrice() {
-        return purchasePrice;
-    }
-
-    public double getSellPrice() {
-        return sellPrice;
-    }
 }
