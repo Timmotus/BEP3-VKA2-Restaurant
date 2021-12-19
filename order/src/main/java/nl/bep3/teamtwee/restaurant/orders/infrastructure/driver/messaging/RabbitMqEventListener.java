@@ -7,7 +7,7 @@ import nl.bep3.teamtwee.restaurant.orders.infrastructure.driver.messaging.event.
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-@Component
+// @Component
 public class RabbitMqEventListener {
     private final OrdersCommandHandler commandHandler;
 
