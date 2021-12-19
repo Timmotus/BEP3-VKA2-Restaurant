@@ -13,5 +13,4 @@ import java.util.UUID;
     Custom queries with @Query, see: https://stackabuse.com/spring-data-mongodb-guide-to-the-query-annotation/
  */
 public interface OrderRepository extends MongoRepository<Order, UUID> {
-    List<Order> findByKeywordsEquals(String keyword, Sort sort);
 }
