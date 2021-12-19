@@ -30,6 +30,11 @@ public class RabbitMqConfig {
     private int port;
 
     @Bean
+    public RabbitMqEventPublisher EventPublisher(RabbitTemplate template) {
+        return new RabbitMqEventPublisher(template, "");
+    }
+
+    @Bean
     public RabbitTemplate rabbitTemplate(Jackson2JsonMessageConverter converter) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate();
         rabbitTemplate.setConnectionFactory(connectionFactory());
