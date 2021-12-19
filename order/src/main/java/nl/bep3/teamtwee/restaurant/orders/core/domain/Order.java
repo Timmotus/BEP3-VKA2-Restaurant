@@ -10,12 +10,15 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderEvent;
 
 @Getter
 @Document
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Order {
     @Id
     private UUID id;
@@ -33,20 +36,8 @@ public class Order {
     @Transient
     private List<OrderEvent> events;
 
-    public Order(String zipCode, String street, Integer streetNumber, UUID paymentId, String status,
-            Set<OrderItem> items) {
-        this.id = UUID.randomUUID();
-        this.zipCode = zipCode;
-        this.street = street;
-        this.streetNumber = streetNumber;
-        this.paymentId = paymentId;
-        this.status = status;
-        this.items = items;
-        this.events = new ArrayList<>();
-    }
-
     public List<OrderEvent> listEvents() {
-        return events;
+        return this.events;
     }
 
     public void clearEvents() {
@@ -58,6 +49,8 @@ public class Order {
     }
 
     public static class OrderBuilder {
+        @Getter
+        private UUID id;
         private String zipCode;
         private String street;
         private Integer streetNumber;
@@ -66,7 +59,13 @@ public class Order {
         private Set<OrderItem> items;
 
         public OrderBuilder() {
+            this.id = UUID.randomUUID();
             this.items = new HashSet<>();
+        }
+
+        public OrderBuilder id(UUID id) {
+            this.id = id;
+            return this;
         }
 
         public OrderBuilder zipCode(String zipCode) {
@@ -105,7 +104,14 @@ public class Order {
         }
 
         public Order build() {
-            return new Order(zipCode, street, streetNumber, paymentId, status, items);
+            return new Order(
+                    this.id,
+                    this.zipCode,
+                    this.street,
+                    this.streetNumber,
+                    this.paymentId,
+                    this.status,
+                    this.items, new ArrayList<>());
         }
     }
 }

@@ -17,7 +17,11 @@ public class RabbitMqEventPublisher implements OrderEventPublisher {
         this.restaurantExchange = restaurantExchange;
     }
 
-    public void publish(OrderEvent event) {
+    public void publishSend(OrderEvent event) {
         this.rabbitTemplate.convertAndSend(restaurantExchange, event.getEventKey(), event);
+    }
+
+    public Object publishSendAndReceive(OrderEvent event) {
+        return this.rabbitTemplate.convertSendAndReceive(restaurantExchange, event.getEventKey(), event);
     }
 }

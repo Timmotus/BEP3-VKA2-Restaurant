@@ -64,7 +64,7 @@ public class OrdersController {
         return this.queryHandler.handle(new GetOrderById(id));
     }
 
-    @GetMapping()
+    @GetMapping
     public List<Order> findOrders(
             @RequestParam(required = false) String orderBy,
             @RequestParam(required = false) String direction) {

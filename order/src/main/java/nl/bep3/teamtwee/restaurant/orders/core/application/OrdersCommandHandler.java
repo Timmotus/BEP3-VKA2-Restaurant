@@ -16,6 +16,7 @@ import nl.bep3.teamtwee.restaurant.orders.core.domain.Order;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.Order.OrderBuilder;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.OrderItem;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderEvent;
+import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderReserveIngredientEvent;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFound;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.messaging.OrderEventPublisher;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.storage.OrderRepository;
@@ -37,10 +38,6 @@ public class OrdersCommandHandler {
         // TODO: get all itemNames from menuservice in one request, availability check
         // TODO: validate if options are applicable to item
 
-        // TODO: try to reserve ingredients at inventoryservice
-
-        // TODO: request payment
-
         OrderBuilder orderBuilder = Order.builder()
                 .zipCode(command.getZipCode())
                 .street(command.getStreet())
@@ -48,11 +45,25 @@ public class OrdersCommandHandler {
                 .paymentId(UUID.randomUUID()) // should be gotten from the payment request
                 .status("PAYMENT_REQUIRED");
 
+        // TODO: try to reserve ingredients at inventoryservice
+        Map<String, Integer> ingredients = Map.of(
+                "Test1", 100,
+                "Test2", 200,
+                "Test3", 300);
+        Object ret = this.eventPublisher.publishSendAndReceive(new OrderReserveIngredientEvent(orderBuilder.getId(), ingredients));
+        if (ret != null) {
+            System.out.println(ret);
+        } else {
+            System.out.println("no response from wherever");
+        }
+
+        // TODO: request payment
+
         // TODO: map ingredients and options from result to items
         command.getItems().forEach(item -> {
-            Map<String, Integer> ingredients = new HashMap<>();
-            itemNames.forEach(itemName -> ingredients.put(itemName, 100));
-            orderBuilder.addItem(new OrderItem(item.getName(), item.getCount(), ingredients, item.getOptions()));
+            Map<String, Integer> items = new HashMap<>();
+            itemNames.forEach(itemName -> items.put(itemName, 100));
+            orderBuilder.addItem(new OrderItem(item.getName(), item.getCount(), items, item.getOptions()));
         });
 
         Order order = orderBuilder.build();
@@ -86,7 +97,7 @@ public class OrdersCommandHandler {
 
     private void publishEvents(Order order) {
         List<OrderEvent> events = order.listEvents();
-        events.forEach(eventPublisher::publish);
+        events.forEach(eventPublisher::publishSend);
         order.clearEvents();
     }
 }
