@@ -31,6 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
-/inventory/mongodb/
-/inventory/rabbitmq/
-/inventory/.mvn/
+
+rabbitmq
+mongodb
