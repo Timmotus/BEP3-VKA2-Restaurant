@@ -16,6 +16,7 @@ import nl.bep3.teamtwee.restaurant.orders.core.domain.Order;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.Order.OrderBuilder;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.OrderItem;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderEvent;
+import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderMenuItemAvailableEvent;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderReserveIngredientEvent;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFound;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.messaging.OrderEventPublisher;
@@ -45,17 +46,25 @@ public class OrdersCommandHandler {
                 .paymentId(UUID.randomUUID()) // should be gotten from the payment request
                 .status("PAYMENT_REQUIRED");
 
-        // TODO: try to reserve ingredients at inventoryservice
-        Map<String, Integer> ingredients = Map.of(
-                "Test1", 100,
-                "Test2", 200,
-                "Test3", 300);
-        Object ret = this.eventPublisher.publishSendAndReceive(new OrderReserveIngredientEvent(orderBuilder.getId(), ingredients));
+        Object ret = this.eventPublisher
+                .publishSendAndReceive(new OrderMenuItemAvailableEvent(itemNames));
         if (ret != null) {
             System.out.println(ret);
         } else {
             System.out.println("no response from wherever");
         }
+        // TODO: try to reserve ingredients at inventoryservice
+        // Map<String, Integer> ingredients = Map.of(
+        // "Test1", 100,
+        // "Test2", 200,
+        // "Test3", 300);
+        // Object ret = this.eventPublisher.publishSendAndReceive(new
+        // OrderReserveIngredientEvent(orderBuilder.getId(), ingredients));
+        // if (ret != null) {
+        // System.out.println(ret);
+        // } else {
+        // System.out.println("no response from wherever");
+        // }
 
         // TODO: request payment
 

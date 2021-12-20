@@ -29,9 +29,36 @@ public class RabbitMqConfig {
     @Value("${spring.rabbitmq.port}")
     private int port;
 
+    @Value("${messaging.exchange.restaurant}")
+    private String restaurantExchangeName;
+
+    @Value("${messaging.queue.order-payments}")
+    private String orderPaymentsQueueName;
+
+    @Value("${messaging.routing-key.order-payments}")
+    private String orderPaymentsRoutingKey;
+
+    @Bean
+    public TopicExchange jobBoardExchange() {
+        return new TopicExchange(restaurantExchangeName);
+    }
+
+    @Bean
+    public Queue orderQueue() {
+        return QueueBuilder.durable(orderPaymentsQueueName).build();
+    }
+
+    @Bean
+    public Binding orderPaymentsBinding() {
+        return BindingBuilder
+                .bind(orderQueue())
+                .to(jobBoardExchange())
+                .with(orderPaymentsRoutingKey);
+    }
+
     @Bean
     public RabbitMqEventPublisher EventPublisher(RabbitTemplate template) {
-        return new RabbitMqEventPublisher(template, "");
+        return new RabbitMqEventPublisher(template, restaurantExchangeName);
     }
 
     @Bean
