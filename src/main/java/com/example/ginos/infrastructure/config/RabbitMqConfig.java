@@ -22,7 +22,7 @@ public class RabbitMqConfig {
 
     @Bean
     public RabbitMqEventPublisher EventPublisher(RabbitTemplate template) {
-        return new RabbitMqEventPublisher(template);
+        return new RabbitMqEventPublisher(template, "restaurantExchange");
     }
 
     @Bean

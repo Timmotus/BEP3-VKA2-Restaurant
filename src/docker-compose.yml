@@ -9,6 +9,9 @@ services:
     volumes:
       - ./rabbitmq/volume/data/:/var/lib/rabbitmq/
       - ./rabbitmq/volume/log/:/var/log/rabbitmq/
+      # MacOS:
+      # ./rabbitmq/volume/data/:/var/lib/rabbitmq/mnesia
+      # ./rabbitmq/volume/log/:/var/log/rabbitmq/mnesia
 
   # https://hub.docker.com/_/mongo
   mongodb:

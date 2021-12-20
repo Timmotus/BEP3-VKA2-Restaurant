@@ -1,7 +1,5 @@
 package com.example.ginos.core.application.command;
 
-import java.util.UUID;
-
 public class IngredientsChecked {
 
   private final boolean enoughIngredients;
