@@ -14,7 +14,6 @@ import java.util.List;
 
 
 @Service
-@Document
 public class MenuCommandHandler {
 
     private final PizzaRepository pizzaRepository;
@@ -60,13 +59,4 @@ public class MenuCommandHandler {
           p.clearEvents();
         }
     }
-
-
-
-
-
-
-
-
-
 }

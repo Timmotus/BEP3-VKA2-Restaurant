@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Document
 public class MenuQueryHandler {
 
     private final PizzaRepository repository;

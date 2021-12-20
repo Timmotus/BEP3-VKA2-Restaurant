@@ -18,10 +18,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
 
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().
-      authorizeRequests().antMatchers(HttpMethod.GET, "/**").permitAll()
-      .antMatchers(HttpMethod.POST, "/**").permitAll()
-      .antMatchers(HttpMethod.PUT, "/**").permitAll()
-      .antMatchers(HttpMethod.DELETE, "/**").permitAll().and().
+      authorizeRequests().anyRequest().permitAll().and().
       requestCache().requestCache(new NullRequestCache()).and().
       cors().configurationSource(request -> configuration.applyPermitDefaultValues()).and().
       csrf().disable();
