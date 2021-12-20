@@ -1,7 +1,7 @@
-package com.example.ginos.infrastructure.driven.messaging;
+package nl.teamtwee.bep3.restaurant.menu.infrastructure.driven.messaging;
 
-import com.example.ginos.core.domain.event.MenuEvent;
-import com.example.ginos.core.port.messaging.MenuEventPublisher;
+import nl.teamtwee.bep3.restaurant.menu.core.domain.event.MenuEvent;
+import nl.teamtwee.bep3.restaurant.menu.core.port.messaging.MenuEventPublisher;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 public class RabbitMqEventPublisher implements MenuEventPublisher {

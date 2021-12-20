@@ -1,6 +1,6 @@
-package com.example.ginos.core.application.command;
+package nl.teamtwee.bep3.restaurant.menu.core.application.command;
 
-import com.example.ginos.core.domain.Pizza;
+import nl.teamtwee.bep3.restaurant.menu.core.domain.Pizza;
 
 import java.util.List;
 

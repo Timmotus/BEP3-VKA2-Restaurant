@@ -1,4 +1,4 @@
-package com.example.ginos.core.domain.event;
+package nl.teamtwee.bep3.restaurant.menu.core.domain.event;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

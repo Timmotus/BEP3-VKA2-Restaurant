@@ -1,6 +1,5 @@
-package com.example.ginos.infrastructure.config;
+package nl.teamtwee.bep3.restaurant.menu.infrastructure.config;
 
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -17,10 +16,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
 
-    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().
-      authorizeRequests().anyRequest().permitAll().and().
-      requestCache().requestCache(new NullRequestCache()).and().
-      cors().configurationSource(request -> configuration.applyPermitDefaultValues()).and().
-      csrf().disable();
+    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
+        .anyRequest().permitAll().and().requestCache().requestCache(new NullRequestCache()).and().cors()
+        .configurationSource(request -> configuration.applyPermitDefaultValues()).and().csrf().disable();
   }
 }

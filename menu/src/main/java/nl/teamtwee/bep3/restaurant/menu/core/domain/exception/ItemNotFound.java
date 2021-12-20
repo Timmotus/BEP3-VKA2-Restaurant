@@ -1,4 +1,4 @@
-package com.example.ginos.core.domain.exception;
+package nl.teamtwee.bep3.restaurant.menu.core.domain.exception;
 
 public class ItemNotFound extends RuntimeException {
 

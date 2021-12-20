@@ -1,9 +1,9 @@
-package com.example.ginos.infrastructure.driver.messaging;
+package nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.messaging;
 
-import com.example.ginos.core.application.MenuCommandHandler;
-import com.example.ginos.core.application.command.AvailablePizza;
-import com.example.ginos.core.application.command.IngredientsChecked;
-import com.example.ginos.infrastructure.driver.messaging.event.PizzaKeywordEvent;
+import nl.teamtwee.bep3.restaurant.menu.core.application.MenuCommandHandler;
+import nl.teamtwee.bep3.restaurant.menu.core.application.command.AvailablePizza;
+import nl.teamtwee.bep3.restaurant.menu.core.application.command.IngredientsChecked;
+import nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.messaging.event.PizzaKeywordEvent;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
@@ -20,14 +20,12 @@ public class RabbitMqEventListener {
         switch (event.eventKey) {
             case "keywords.pizza.available":
                 this.commandHandler.handle(
-                        new AvailablePizza(event.pizza, event.keyword)
-                );
+                        new AvailablePizza(event.pizza, event.keyword));
                 break;
             case "keywords.pizza.ingredientschecked":
-              this.commandHandler.handle(
-                new IngredientsChecked(event.enoughIngredients, event.keyword)
-              );
-              break;
+                this.commandHandler.handle(
+                        new IngredientsChecked(event.enoughIngredients, event.keyword));
+                break;
 
         }
     }

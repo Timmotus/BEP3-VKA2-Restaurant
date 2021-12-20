@@ -1,17 +1,15 @@
-package com.example.ginos.core.application;
+package nl.teamtwee.bep3.restaurant.menu.core.application;
 
-import com.example.ginos.core.application.command.AdminCreateMenu;
-import com.example.ginos.core.application.command.AvailablePizza;
-import com.example.ginos.core.application.command.IngredientsChecked;
-import com.example.ginos.core.domain.Pizza;
-import com.example.ginos.core.domain.event.MenuEvent;
-import com.example.ginos.core.port.messaging.MenuEventPublisher;
-import com.example.ginos.core.port.storage.PizzaRepository;
-import org.springframework.data.mongodb.core.mapping.Document;
+import nl.teamtwee.bep3.restaurant.menu.core.application.command.AdminCreateMenu;
+import nl.teamtwee.bep3.restaurant.menu.core.application.command.AvailablePizza;
+import nl.teamtwee.bep3.restaurant.menu.core.application.command.IngredientsChecked;
+import nl.teamtwee.bep3.restaurant.menu.core.domain.Pizza;
+import nl.teamtwee.bep3.restaurant.menu.core.domain.event.MenuEvent;
+import nl.teamtwee.bep3.restaurant.menu.core.port.messaging.MenuEventPublisher;
+import nl.teamtwee.bep3.restaurant.menu.core.port.storage.PizzaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 
 @Service
 public class MenuCommandHandler {
@@ -28,7 +26,7 @@ public class MenuCommandHandler {
         Pizza pizza = new Pizza(command.getName(), command.getIngredients(), command.getPrice(),
                 command.getQuantity());
 
-//        this.publishEventsFor(pizza);
+        // this.publishEventsFor(pizza);
         this.pizzaRepository.save(pizza);
 
         return pizza;
@@ -38,25 +36,23 @@ public class MenuCommandHandler {
         publishEventsFor(command.getPizzas());
     }
 
-    public void handle(IngredientsChecked command){
-      publishEventsFor(command.checkEnoughIngredients());
+    public void handle(IngredientsChecked command) {
+        publishEventsFor(command.checkEnoughIngredients());
 
     }
 
-    //Moet nog gemaakt worden
-    private void publishEventsFor(boolean ingredientsChecked){
-//      List<MenuEvent> events = ingredientsChecked.listEvents();
-//      events.forEach(eventPublisher::publish);
-//      ingredientsChecked.clearEvents();
+    // Moet nog gemaakt worden
+    private void publishEventsFor(boolean ingredientsChecked) {
+        // List<MenuEvent> events = ingredientsChecked.listEvents();
+        // events.forEach(eventPublisher::publish);
+        // ingredientsChecked.clearEvents();
     }
-
-
 
     private void publishEventsFor(List<Pizza> pizza) {
         for (Pizza p : pizza) {
-          List<MenuEvent> events = p.listEvents();
-          events.forEach(eventPublisher::publish);
-          p.clearEvents();
+            List<MenuEvent> events = p.listEvents();
+            events.forEach(eventPublisher::publish);
+            p.clearEvents();
         }
     }
 }

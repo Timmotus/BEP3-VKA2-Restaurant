@@ -1,11 +1,11 @@
-package com.example.ginos.infrastructure.driver.web;
+package nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web;
 
-import com.example.ginos.core.application.MenuCommandHandler;
-import com.example.ginos.core.application.MenuQueryHandler;
-import com.example.ginos.core.application.command.AdminCreateMenu;
-import com.example.ginos.core.application.query.GetPizzaDetailsByName;
-import com.example.ginos.core.domain.Pizza;
-import com.example.ginos.infrastructure.driver.web.request.AdminAddMenuRequest;
+import nl.teamtwee.bep3.restaurant.menu.core.application.MenuCommandHandler;
+import nl.teamtwee.bep3.restaurant.menu.core.application.MenuQueryHandler;
+import nl.teamtwee.bep3.restaurant.menu.core.application.command.AdminCreateMenu;
+import nl.teamtwee.bep3.restaurant.menu.core.application.query.GetPizzaDetailsByName;
+import nl.teamtwee.bep3.restaurant.menu.core.domain.Pizza;
+import nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web.request.AdminAddMenuRequest;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,7 +25,8 @@ public class MenuCardController {
 
     @PostMapping("admin/addmenu")
     public Pizza adminAddPizza(@Valid @RequestBody AdminAddMenuRequest request) {
-        return this.menuCommandHandler.handle(new AdminCreateMenu(request.name, request.ingredients, request.price, request.quantity));
+        return this.menuCommandHandler
+                .handle(new AdminCreateMenu(request.name, request.ingredients, request.price, request.quantity));
     }
 
     @GetMapping("/{pizzaname}")
@@ -34,7 +35,7 @@ public class MenuCardController {
     }
 
     @GetMapping("/all")
-    public List<Pizza> getAllPizza(){
+    public List<Pizza> getAllPizza() {
         return this.menuQueryHandler.handle();
     }
 

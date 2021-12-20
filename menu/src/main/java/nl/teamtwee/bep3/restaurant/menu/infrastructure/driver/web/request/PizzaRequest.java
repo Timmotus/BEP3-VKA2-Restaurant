@@ -1,4 +1,4 @@
-package com.example.ginos.infrastructure.driver.web.request;
+package nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -16,8 +16,5 @@ public class PizzaRequest {
   public int quantity;
 
   public double price;
-
-
-
 
 }

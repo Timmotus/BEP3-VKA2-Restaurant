@@ -1,6 +1,6 @@
-package com.example.ginos.infrastructure.driver.web.request;
+package nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web.request;
 
-import com.example.ginos.core.domain.Ingredient;
+import nl.teamtwee.bep3.restaurant.menu.core.domain.Ingredient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.example.ginos.infrastructure.config;
+package nl.teamtwee.bep3.restaurant.menu.infrastructure.config;
 
-import com.example.ginos.infrastructure.driven.messaging.RabbitMqEventPublisher;
+import nl.teamtwee.bep3.restaurant.menu.infrastructure.driven.messaging.RabbitMqEventPublisher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;

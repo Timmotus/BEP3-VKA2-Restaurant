@@ -1,6 +1,6 @@
-package com.example.ginos.infrastructure.driver.messaging.event;
+package nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.messaging.event;
 
-import com.example.ginos.core.domain.Pizza;
+import nl.teamtwee.bep3.restaurant.menu.core.domain.Pizza;
 
 import java.time.Instant;
 import java.util.List;

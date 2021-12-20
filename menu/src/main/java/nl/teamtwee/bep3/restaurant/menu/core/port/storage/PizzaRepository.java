@@ -1,6 +1,6 @@
-package com.example.ginos.core.port.storage;
+package nl.teamtwee.bep3.restaurant.menu.core.port.storage;
 
-import com.example.ginos.core.domain.Pizza;
+import nl.teamtwee.bep3.restaurant.menu.core.domain.Pizza;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package com.example.ginos.core.application.command;
+package nl.teamtwee.bep3.restaurant.menu.core.application.command;
 
 public class IngredientsChecked {
 

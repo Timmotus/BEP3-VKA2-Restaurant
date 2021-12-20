@@ -1,4 +1,4 @@
-package com.example.ginos.core.application.query;
+package nl.teamtwee.bep3.restaurant.menu.core.application.query;
 
 import lombok.Getter;
 
@@ -6,8 +6,8 @@ import lombok.Getter;
 public class GetPizzaDetailsByName {
     private String name;
 
-    public GetPizzaDetailsByName(String name){
-        this.name =  name;
+    public GetPizzaDetailsByName(String name) {
+        this.name = name;
     }
 
 }

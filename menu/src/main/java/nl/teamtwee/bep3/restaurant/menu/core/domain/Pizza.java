@@ -1,9 +1,8 @@
-package com.example.ginos.core.domain;
+package nl.teamtwee.bep3.restaurant.menu.core.domain;
 
-import com.example.ginos.core.domain.event.MenuEvent;
-import com.example.ginos.infrastructure.driver.web.request.PizzaRequest;
+import nl.teamtwee.bep3.restaurant.menu.core.domain.event.MenuEvent;
+import nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web.request.PizzaRequest;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -46,7 +45,6 @@ public class Pizza {
     this.quantity = pizzaRequest.quantity;
 
   }
-
 
   public List<Ingredient> getIngredients() {
     return ingredients;
