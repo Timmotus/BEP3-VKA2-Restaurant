@@ -29,8 +29,12 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### MacOS ###
+.DS_Store
+
 ### VS Code ###
 .vscode/
 
-rabbitmq
+### Project Specific ###
 mongodb
+rabbitmq
