@@ -8,8 +8,8 @@
         <version>2.5.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>nl.hu.bep3.jobboard</groupId>
-    <artifactId>jobs</artifactId>
+    <groupId>nl.teamtwee.bep3.restaurant</groupId>
+    <artifactId>payment</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
