@@ -9,6 +9,7 @@ import nl.teamtwee.bep3.restaurant.menu.core.port.messaging.MenuEventPublisher;
 import nl.teamtwee.bep3.restaurant.menu.core.port.storage.PizzaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,12 +33,16 @@ public class MenuCommandHandler {
         return pizza;
     }
 
-    public void handle(AvailablePizza command) {
-        publishEventsFor(command.getPizzas());
+    public Object handle(AvailablePizza command) {
+        List<Pizza> pizzas = new ArrayList<>();
+        command.getPizzas().forEach(name -> pizzas.add(new Pizza(name, new ArrayList<>(), 10, 10)));
+        publishEventsFor(pizzas);
+        return pizzas;
     }
 
-    public void handle(IngredientsChecked command) {
+    public Object handle(IngredientsChecked command) {
         publishEventsFor(command.checkEnoughIngredients());
+        return null;
 
     }
 
