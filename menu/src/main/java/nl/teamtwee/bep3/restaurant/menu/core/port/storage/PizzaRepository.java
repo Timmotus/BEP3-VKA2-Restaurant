@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface PizzaRepository extends MongoRepository<Pizza, UUID> {
     Pizza findPizzaByName(String pizzaName);
+    boolean getPizzaByName(String name);
 }

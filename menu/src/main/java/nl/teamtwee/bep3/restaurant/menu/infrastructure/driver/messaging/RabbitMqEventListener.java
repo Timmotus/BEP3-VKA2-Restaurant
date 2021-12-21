@@ -16,16 +16,16 @@ public class RabbitMqEventListener {
     }
 
     @RabbitListener(queues = "#{'${messaging.queue.menu}'}")
-    Object listen(PizzaKeywordEvent event) {
+    void listen(PizzaKeywordEvent event) {
         switch (event.eventKey) {
-            case "pizza.available":
-                return this.commandHandler.handle(
-                        new AvailablePizza(event.pizzaNames));
-            case "pizza.ingredientschecked":
-                return this.commandHandler.handle(
-                        new IngredientsChecked(event.enoughIngredients));
-            default:
-                return null;
+            case "keywords.pizza.available":
+                this.commandHandler.handle(event.orderedPizzas);
+                break;
+//            case "pizza.ingredientschecked":
+//                return this.commandHandler.handle(
+//                        new IngredientsChecked(event.enoughIngredients));
+//            default:
+//                return null;
         }
     }
 }

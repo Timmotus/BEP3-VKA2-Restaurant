@@ -20,11 +20,22 @@ public class Pizza {
   private UUID id;
   private String name;
   private List<Ingredient> ingredients;
+  private List<String> options;
   private double price;
   private int quantity;
 
   @Transient
   private List<MenuEvent> events = new ArrayList<>();
+
+  public Pizza(String pizzaName, double price) {
+    this.name = pizzaName;
+    this.price = price;
+  }
+
+  public Pizza(String pizzaName, List<String> options) {
+    this.name = String.valueOf(pizzaName);
+    this.options = options;
+  }
 
   public Pizza(String name, List<Ingredient> ingredients, double price, int quantity) {
     this.id = UUID.randomUUID();

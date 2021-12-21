@@ -11,6 +11,8 @@ public class AdminAddMenuRequest {
 
     public List<Ingredient> ingredients;
 
+    public List<String> options;
+
     @Positive
     public double price;
 

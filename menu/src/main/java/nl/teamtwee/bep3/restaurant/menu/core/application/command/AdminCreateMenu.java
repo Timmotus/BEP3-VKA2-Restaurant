@@ -13,12 +13,14 @@ import java.util.List;
 public class AdminCreateMenu {
     private String name;
     private List<Ingredient> ingredients;
+    private List<String> options;
     private double price;
     private int quantity;
 
-    public AdminCreateMenu(String name, List<Ingredient> ingredients, double price, int quantity) {
+    public AdminCreateMenu(String name, List<Ingredient> ingredients, List<String> options, double price, int quantity) {
         this.name = name;
         this.ingredients = ingredients;
+        this.options = options;
         this.price = price;
         this.quantity = quantity;
     }
