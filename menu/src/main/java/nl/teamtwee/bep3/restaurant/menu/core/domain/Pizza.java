@@ -1,5 +1,6 @@
 package nl.teamtwee.bep3.restaurant.menu.core.domain;
 
+import lombok.AllArgsConstructor;
 import nl.teamtwee.bep3.restaurant.menu.core.domain.event.MenuEvent;
 import nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web.request.PizzaRequest;
 import lombok.Getter;
@@ -55,6 +56,14 @@ public class Pizza {
     this.price = pizzaRequest.price;
     this.quantity = pizzaRequest.quantity;
 
+  }
+
+  public Pizza(Pizza pizza) {
+    this.id = pizza.getId();
+    this.name = pizza.getName();
+    this.ingredients = pizza.getIngredients();
+    this.price = pizza.getPrice();
+    this.quantity = pizza.getQuantity();
   }
 
   public List<Ingredient> getIngredients() {
