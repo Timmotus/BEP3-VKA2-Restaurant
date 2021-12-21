@@ -1,6 +1,7 @@
 package nl.teamtwee.bep3.restaurant.menu.core.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 import nl.teamtwee.bep3.restaurant.menu.core.domain.event.MenuEvent;
 import nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web.request.PizzaRequest;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Document
+@ToString
 public class Pizza {
   @Id
   private UUID id;
@@ -27,6 +29,18 @@ public class Pizza {
 
   @Transient
   private List<MenuEvent> events = new ArrayList<>();
+
+  public Pizza(){
+
+  }
+
+  public Pizza(UUID id, String name, List<Ingredient> ingredients, double price, int quantity) {
+    this.id = id;
+    this.name = name;
+    this.ingredients = ingredients;
+    this.price = price;
+    this.quantity = quantity;
+  }
 
   public Pizza(String pizzaName, double price) {
     this.name = pizzaName;

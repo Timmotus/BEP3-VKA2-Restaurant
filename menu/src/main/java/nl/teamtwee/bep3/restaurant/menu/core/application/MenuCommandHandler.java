@@ -38,7 +38,8 @@ public class MenuCommandHandler {
         List<String> pizzasWhichDontExist = new ArrayList<>();
         for (OrderedPizzaRequest op : orderedPizzas) {
             if(pizzaRepository.existsByName(op.getPizzaName())){
-                Pizza pizza = new Pizza(pizzaRepository.findPizzaByName(op.getPizzaName()));
+              Pizza pizza = pizzaRepository.findPizzaByName(op.getPizzaName());
+//                Pizza pizza = new Pizza(pizzaRepository.findPizzaByName(op.getPizzaName()));
                 pizzasAndTheirPrice.add(new Pizza(pizza.getName(), pizza.getPrice()));
                 orderedPizzaResponse.setPizzasAndTheirPrice(pizzasAndTheirPrice);
                 orderedPizzaResponse.setPizzasWhichDontExist(pizzasWhichDontExist);
