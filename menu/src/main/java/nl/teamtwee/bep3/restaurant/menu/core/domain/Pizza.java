@@ -21,6 +21,7 @@ public class Pizza {
   private String name;
   private List<Ingredient> ingredients;
   private List<PizzaOptions> options;
+  private int ingredientsListSize;
   private PizzaSizes size;
   private double price;
   private int quantity;
@@ -33,6 +34,7 @@ public class Pizza {
     this.name = name;
     this.ingredients = ingredients;
     this.options = options;
+    this.ingredientsListSize = ingredients.size();
     this.size = size;
     this.price = price;
     this.quantity = quantity;
