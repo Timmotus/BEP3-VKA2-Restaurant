@@ -11,7 +11,7 @@ public class PizzaKeywordEvent {
   public String eventKey;
   public Instant eventDate;
   public List<String> pizzaOptions;
-  public List<OrderedPizzaRequest> orderedPizzas;
+  public List<String> orderedPizzas;
   public List<String> pizzaNames;
   public boolean enoughIngredients;
 }

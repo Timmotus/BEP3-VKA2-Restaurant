@@ -3,6 +3,7 @@ package nl.teamtwee.bep3.restaurant.menu.core.application;
 import nl.teamtwee.bep3.restaurant.menu.core.application.command.AdminCreateMenu;
 import nl.teamtwee.bep3.restaurant.menu.core.domain.OrderedPizzaResponse;
 import nl.teamtwee.bep3.restaurant.menu.core.domain.Pizza;
+import nl.teamtwee.bep3.restaurant.menu.core.domain.exception.ItemNotFound;
 import nl.teamtwee.bep3.restaurant.menu.core.port.messaging.MenuEventPublisher;
 import nl.teamtwee.bep3.restaurant.menu.core.port.storage.PizzaRepository;
 import nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web.request.OrderedPizzaRequest;
@@ -10,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MenuCommandHandler {
@@ -31,24 +34,12 @@ public class MenuCommandHandler {
         return pizza;
     }
 
-    public ResponseEntity<OrderedPizzaResponse> handle(List<OrderedPizzaRequest> orderedPizzas) {
-        OrderedPizzaResponse orderedPizzaResponse = new OrderedPizzaResponse();
-        List<Pizza> pizzasAndTheirPrice = new ArrayList<>();
-        List<String> pizzasWhichDontExist = new ArrayList<>();
-        for (OrderedPizzaRequest op : orderedPizzas) {
-            if (pizzaRepository.existsByName(op.getPizzaName())) {
-                Pizza pizza = pizzaRepository.findPizzaByName(op.getPizzaName());
-                pizzasAndTheirPrice.add(new Pizza(pizza.getName(), pizza.getIngredients(),
-                        pizza.getOptions(), pizza.getSize(), pizza.getPrice(), pizza.getQuantity()));
-                orderedPizzaResponse.setPizzasAndTheirPrice(pizzasAndTheirPrice);
-                orderedPizzaResponse.setPizzasWhichDontExist(pizzasWhichDontExist);
-                orderedPizzaResponse.setOrderCanBeMade(true);
-            } else {
-                pizzasWhichDontExist.add(op.getPizzaName());
-                orderedPizzaResponse.setPizzasWhichDontExist(pizzasWhichDontExist);
-                orderedPizzaResponse.setOrderCanBeMade(false);
-            }
+    public OrderedPizzaResponse handle(List<String> orderedPizzas) {
+        Map<String, Long> items = new HashMap<>();
+        for (String name : orderedPizzas) {
+            Pizza pizza = this.pizzaRepository.findByName(name).orElseThrow(() -> new ItemNotFound("Pizza " + name + "not found"));
+            items.put(name, Double.valueOf(pizza.getPrice()).longValue());
         }
-        return ResponseEntity.ok(orderedPizzaResponse);
+        return new OrderedPizzaResponse(items);
     }
 }

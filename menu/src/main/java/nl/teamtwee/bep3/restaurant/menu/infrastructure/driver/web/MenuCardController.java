@@ -48,12 +48,12 @@ public class MenuCardController {
     }
 
     @PostMapping("/pizza/available")
-    public ResponseEntity<OrderedPizzaResponse> createAccessToken(@RequestBody List<OrderedPizzaRequest> orderedPizzaRequest) {
+    public ResponseEntity<OrderedPizzaResponse> areAvailable(@RequestBody List<String> orderedPizzaRequest) {
         if (orderedPizzaRequest.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         else{
-            return this.menuCommandHandler.handle(orderedPizzaRequest);
+            return ResponseEntity.ok(this.menuCommandHandler.handle(orderedPizzaRequest));
         }
     }
 }

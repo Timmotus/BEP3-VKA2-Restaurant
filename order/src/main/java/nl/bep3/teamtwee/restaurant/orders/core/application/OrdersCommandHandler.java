@@ -47,16 +47,16 @@ public class OrdersCommandHandler {
                 command.getItemCounts().get(item.getName())));
 
         // Reserve items with the kitchen, maybe want this to be asynchronous
-        UUID reservationId = this.kitchenGateway.createReservation(orderBuilder.getId(), itemNames);
+        // UUID reservationId = this.kitchenGateway.createReservation(orderBuilder.getId(), itemNames);
 
         // Request a payment
-        UUID paymentId = this.paymentGateway.createPayment(
-                orderBuilder.getId(),
-                menuItemsWithPrices.stream().mapToLong(item -> item.getPrice()).sum());
+        // UUID paymentId = this.paymentGateway.createPayment(
+        //         orderBuilder.getId(),
+        //         menuItemsWithPrices.stream().mapToLong(item -> item.getPrice()).sum());
 
         Order order = orderBuilder
-                .paymentId(paymentId)
-                .reservationId(reservationId)
+                .paymentId(UUID.randomUUID())
+                .reservationId(UUID.randomUUID())
                 .status("PAYMENT_REQUIRED")
                 .build();
 
