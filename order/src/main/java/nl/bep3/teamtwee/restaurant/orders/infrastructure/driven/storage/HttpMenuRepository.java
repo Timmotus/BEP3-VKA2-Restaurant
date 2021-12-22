@@ -29,11 +29,10 @@ public class HttpMenuRepository implements MenuRepository {
         URI uri = URI.create(this.rootPath + "/menu/prices?names=" + String.join(",", items));
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
-        ParameterizedTypeReference<HashMap<String, Long>> responseType = new ParameterizedTypeReference<>() {
-        };
+        ParameterizedTypeReference<HashMap<String, Double>> responseType = new ParameterizedTypeReference<>() {};
 
         // should also check if any items not found, deal with errors
-        Map<String, Long> results = new HashMap<>();
+        Map<String, Double> results = new HashMap<>();
         try {
             results = this.client.exchange(
                     uri,
