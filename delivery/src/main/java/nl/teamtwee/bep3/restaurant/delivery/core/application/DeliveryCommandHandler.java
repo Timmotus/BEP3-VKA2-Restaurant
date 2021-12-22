@@ -2,52 +2,49 @@ package nl.teamtwee.bep3.restaurant.delivery.core.application;
 
 import nl.teamtwee.bep3.restaurant.delivery.core.application.command.DeliveryStatus;
 import nl.teamtwee.bep3.restaurant.delivery.core.domain.Delivery;
-import nl.teamtwee.bep3.restaurant.delivery.core.port.messaging.MenuEventPublisher;
+import nl.teamtwee.bep3.restaurant.delivery.core.domain.DeliveryStatusEnum;
+import nl.teamtwee.bep3.restaurant.delivery.core.domain.event.DeliveryEvent;
+import nl.teamtwee.bep3.restaurant.delivery.core.port.messaging.DeliveryEventPublisher;
 import nl.teamtwee.bep3.restaurant.delivery.core.port.storage.DeliveryRepository;
-import nl.teamtwee.bep3.restaurant.delivery.infrastructure.driver.web.request.DeliveryStatusRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static nl.teamtwee.bep3.restaurant.delivery.core.domain.DeliveryStatusEnum.DELIVERED_SUCCESSFULLY;
+import static nl.teamtwee.bep3.restaurant.delivery.core.domain.DeliveryStatusEnum.DELIVERY_STARTED;
 
 @Service
 public class DeliveryCommandHandler {
 
     private final DeliveryRepository deliveryRepository;
-    private final MenuEventPublisher eventPublisher;
+    private final DeliveryEventPublisher eventPublisher;
 
-    public DeliveryCommandHandler(DeliveryRepository deliveryRepository, MenuEventPublisher eventPublisher) {
+    public DeliveryCommandHandler(DeliveryRepository deliveryRepository, DeliveryEventPublisher eventPublisher) {
         this.deliveryRepository = deliveryRepository;
         this.eventPublisher = eventPublisher;
     }
 
-    public Delivery handle(DeliveryStatus delivery) {
-        return null; //moet nog gemaakt worden
+    public void handle(DeliveryStatus command) throws InterruptedException {
+        DeliveryStatusEnum deliveryStatus = command.deliveryStatusEnum;
+            Delivery delivery = new Delivery(command.orderId, command.deliveryStatusEnum);
+            switch (delivery.getDeliveryStatusEnum()) {
+                case READY_TO_BE_DELIVERED:
+                    delivery.setDeliveryStatusEnum(DELIVERY_STARTED);
+                    deliveryRepository.save(delivery);
+                    publishEventsFor(delivery);
+                    Thread.sleep(120000);
+                    break;
+                case DELIVERY_STARTED:
+                    delivery.setDeliveryStatusEnum(DELIVERED_SUCCESSFULLY);
+                    deliveryRepository.save(delivery);
+                    Thread.sleep(120000);
+                    break;
+            }
     }
 
-    //    public Object handle(AvailablePizza command) {
-//        List<Pizza> pizzas = new ArrayList<>();
-//        command.getPizzas().forEach(name -> pizzas.add(new Pizza(name, new ArrayList<>(), 10, 10)));
-//        publishEventsFor(pizzas);
-//        return pizzas;
-//    }
-//
-//    public Object handle(IngredientsChecked command) {
-//        publishEventsFor(command.checkEnoughIngredients());
-//        return null;
-//
-//    }
-
-    // Moet nog gemaakt worden
-//    private void publishEventsFor(boolean ingredientsChecked) {
-    // List<MenuEvent> events = ingredientsChecked.listEvents();
-    // events.forEach(eventPublisher::publish);
-    // ingredientsChecked.clearEvents();
-//        return null;
-//}
-
-//    private void publishEventsFor(List<Pizza> pizza) {
-//        for (Pizza p : pizza) {
-//            List<MenuEvent> events = p.listEvents();
-//            events.forEach(eventPublisher::publish);
-//            p.clearEvents();
-//        }
-//    }
+    private void publishEventsFor(Delivery delivery) {
+        List<DeliveryEvent> events = delivery.listEvents();
+        events.forEach(eventPublisher::publish);
+        delivery.clearEvents();
+    }
 }

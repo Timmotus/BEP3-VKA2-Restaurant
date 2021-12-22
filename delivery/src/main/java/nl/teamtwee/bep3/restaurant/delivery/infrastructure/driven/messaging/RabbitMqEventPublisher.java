@@ -1,10 +1,10 @@
 package nl.teamtwee.bep3.restaurant.delivery.infrastructure.driven.messaging;
 
 import nl.teamtwee.bep3.restaurant.delivery.core.domain.event.DeliveryEvent;
-import nl.teamtwee.bep3.restaurant.delivery.core.port.messaging.MenuEventPublisher;
+import nl.teamtwee.bep3.restaurant.delivery.core.port.messaging.DeliveryEventPublisher;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
-public class RabbitMqEventPublisher implements MenuEventPublisher {
+public class RabbitMqEventPublisher implements DeliveryEventPublisher {
 
     private final RabbitTemplate rabbitTemplate;
     private final String restaurantExchange;

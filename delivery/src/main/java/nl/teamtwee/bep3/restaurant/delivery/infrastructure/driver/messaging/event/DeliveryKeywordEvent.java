@@ -8,5 +8,6 @@ public class DeliveryKeywordEvent {
   public UUID eventId;
   public String eventKey;
   public Instant eventDate;
-  public Enum<DeliveryStatusEnum> deliveryStatusEnum;
+  public DeliveryStatusEnum deliveryStatusEnum;
+  public UUID orderId;
 }

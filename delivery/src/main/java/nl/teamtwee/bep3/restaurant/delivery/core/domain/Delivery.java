@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 @Getter
 @Setter
 @Document
@@ -17,12 +18,12 @@ public class Delivery {
     @Id
     private UUID id;
     private UUID orderId;
-    private Enum<DeliveryStatusEnum> deliveryStatusEnum;
+    private DeliveryStatusEnum deliveryStatusEnum;
 
     @Transient
     private List<DeliveryEvent> events = new ArrayList<>();
 
-    public Delivery(UUID orderId, Enum<DeliveryStatusEnum> deliveryStatusEnum) {
+    public Delivery(UUID orderId, DeliveryStatusEnum deliveryStatusEnum) {
         this.id = UUID.randomUUID();
         this.orderId = orderId;
         this.deliveryStatusEnum = deliveryStatusEnum;
