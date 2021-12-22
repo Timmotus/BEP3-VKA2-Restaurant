@@ -1,5 +1,19 @@
 package nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import nl.teamtwee.bep3.restaurant.menu.core.application.MenuCommandHandler;
 import nl.teamtwee.bep3.restaurant.menu.core.application.MenuQueryHandler;
 import nl.teamtwee.bep3.restaurant.menu.core.application.command.AdminCreateMenu;
@@ -7,13 +21,6 @@ import nl.teamtwee.bep3.restaurant.menu.core.application.query.GetPizzaDetailsBy
 import nl.teamtwee.bep3.restaurant.menu.core.domain.OrderedPizzaResponse;
 import nl.teamtwee.bep3.restaurant.menu.core.domain.Pizza;
 import nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web.request.AdminAddMenuRequest;
-import nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web.request.OrderedPizzaRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("menu")
@@ -47,13 +54,8 @@ public class MenuCardController {
         return this.menuQueryHandler.handle();
     }
 
-    @PostMapping("/pizza/available")
-    public ResponseEntity<OrderedPizzaResponse> areAvailable(@RequestBody List<String> orderedPizzaRequest) {
-        if (orderedPizzaRequest.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        else{
-            return ResponseEntity.ok(this.menuCommandHandler.handle(orderedPizzaRequest));
-        }
+    @GetMapping("/pizza/available")
+    public ResponseEntity<Map<String, Long>> areAvailable(@RequestParam List<String> names) {
+        return ResponseEntity.ok(this.menuCommandHandler.handle(names));
     }
 }

@@ -34,12 +34,12 @@ public class MenuCommandHandler {
         return pizza;
     }
 
-    public OrderedPizzaResponse handle(List<String> orderedPizzas) {
+    public Map<String, Long> handle(List<String> orderedPizzas) {
         Map<String, Long> items = new HashMap<>();
         for (String name : orderedPizzas) {
             Pizza pizza = this.pizzaRepository.findByName(name).orElseThrow(() -> new ItemNotFound("Pizza " + name + "not found"));
             items.put(name, Double.valueOf(pizza.getPrice()).longValue());
         }
-        return new OrderedPizzaResponse(items);
+        return items;
     }
 }

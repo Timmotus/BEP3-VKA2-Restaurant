@@ -2,9 +2,11 @@ package nl.bep3.teamtwee.restaurant.orders.infrastructure.driven.storage;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.http.HttpEntity;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -13,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.MenuItem;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.storage.MenuRepository;
-import nl.bep3.teamtwee.restaurant.orders.infrastructure.driven.storage.dto.MenuItemResult;
 
 @AllArgsConstructor
 public class HttpMenuRepository implements MenuRepository {
@@ -22,27 +23,23 @@ public class HttpMenuRepository implements MenuRepository {
 
     @Override
     public List<MenuItem> getMenuItemsByName(List<String> items) {
-        URI uri = URI.create(this.rootPath + "/menu/pizza/available");
+        URI uri = URI.create(this.rootPath + "/menu/pizza/available?names=" + String.join(",", items));
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<List<String>> requestEntity = new HttpEntity<>(
-                items,
-                requestHeaders);
-
-                System.out.println(requestEntity);
+        ParameterizedTypeReference<HashMap<String, Long>> responseType = new ParameterizedTypeReference<>() {};
 
         // should also check if any items not found, deal with errors
-        MenuItemResult results = this.client.exchange(
+        Map<String, Long> results = this.client.exchange(
                 uri,
-                HttpMethod.POST,
-                requestEntity,
-                MenuItemResult.class).getBody();
+                HttpMethod.GET,
+                null,
+                responseType).getBody();
 
         if (results == null) {
             return new ArrayList<>();
         }
         List<MenuItem> res = new ArrayList<>();
-        results.getItems().forEach((name, price) -> res.add(new MenuItem(name, price)));
+        results.forEach((name, price) -> res.add(new MenuItem(name, price)));
         return res;
     }
 }
