@@ -1,8 +1,6 @@
 package nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.messaging;
 
 import nl.teamtwee.bep3.restaurant.menu.core.application.MenuCommandHandler;
-import nl.teamtwee.bep3.restaurant.menu.core.application.command.AvailablePizza;
-import nl.teamtwee.bep3.restaurant.menu.core.application.command.IngredientsChecked;
 import nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.messaging.event.PizzaKeywordEvent;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -15,18 +13,17 @@ public class RabbitMqEventListener {
         this.commandHandler = commandHandler;
     }
 
-    @RabbitListener(queues = "#{'${messaging.queue.pizza-keywords}'}")
+    @RabbitListener(queues = "#{'${messaging.queue.menu}'}")
     void listen(PizzaKeywordEvent event) {
         switch (event.eventKey) {
             case "keywords.pizza.available":
-                this.commandHandler.handle(
-                        new AvailablePizza(event.pizza, event.keyword));
+                this.commandHandler.handle(event.orderedPizzas);
                 break;
-            case "keywords.pizza.ingredientschecked":
-                this.commandHandler.handle(
-                        new IngredientsChecked(event.enoughIngredients, event.keyword));
-                break;
-
+//            case "pizza.ingredientschecked":
+//                return this.commandHandler.handle(
+//                        new IngredientsChecked(event.enoughIngredients));
+//            default:
+//                return null;
         }
     }
 }

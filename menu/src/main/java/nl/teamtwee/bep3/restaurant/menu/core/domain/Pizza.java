@@ -1,9 +1,7 @@
 package nl.teamtwee.bep3.restaurant.menu.core.domain;
 
+import lombok.*;
 import nl.teamtwee.bep3.restaurant.menu.core.domain.event.MenuEvent;
-import nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web.request.PizzaRequest;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,35 +13,31 @@ import java.util.UUID;
 @Getter
 @Setter
 @Document
+@ToString
+@NoArgsConstructor
 public class Pizza {
   @Id
   private UUID id;
   private String name;
   private List<Ingredient> ingredients;
+  private List<PizzaOptions> options;
+  private int ingredientsListSize;
+  private PizzaSizes size;
   private double price;
   private int quantity;
 
   @Transient
   private List<MenuEvent> events = new ArrayList<>();
 
-  public Pizza(String name, List<Ingredient> ingredients, double price, int quantity) {
+  public Pizza(String name, List<Ingredient> ingredients, List<PizzaOptions> options, PizzaSizes size, double price, int quantity) {
     this.id = UUID.randomUUID();
     this.name = name;
     this.ingredients = ingredients;
+    this.options = options;
+    this.ingredientsListSize = ingredients.size();
+    this.size = size;
     this.price = price;
     this.quantity = quantity;
-  }
-
-  public Pizza(PizzaRequest pizzaRequest) {
-    this.id = UUID.randomUUID();
-    this.name = pizzaRequest.name;
-    this.ingredients = new ArrayList<>();
-    for (String string : pizzaRequest.ingredients) {
-      this.ingredients.add(new Ingredient(string));
-    }
-    this.price = pizzaRequest.price;
-    this.quantity = pizzaRequest.quantity;
-
   }
 
   public List<Ingredient> getIngredients() {

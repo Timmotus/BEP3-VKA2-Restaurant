@@ -1,7 +1,12 @@
 package nl.teamtwee.bep3.restaurant.menu.infrastructure.config;
 
-import nl.teamtwee.bep3.restaurant.menu.infrastructure.driven.messaging.RabbitMqEventPublisher;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -10,6 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+
+import nl.teamtwee.bep3.restaurant.menu.infrastructure.driven.messaging.RabbitMqEventPublisher;
 
 @Configuration
 public class RabbitMqConfig {
@@ -20,9 +27,36 @@ public class RabbitMqConfig {
     @Value("${spring.rabbitmq.port}")
     private int port;
 
+    @Value("${messaging.exchange.restaurant}")
+    private String restaurantExchangeName;
+
+    @Value("${messaging.queue.menu}")
+    private String menuQueueName;
+
+    @Value("${messaging.routing-key.menu}")
+    private String menuRoutingKey;
+
+    @Bean
+    public TopicExchange restaurantExchange() {
+        return new TopicExchange(restaurantExchangeName);
+    }
+
+    @Bean
+    public Queue menuQueue() {
+        return QueueBuilder.durable(menuQueueName).build();
+    }
+
+    @Bean
+    public Binding menuBinding() {
+        return BindingBuilder
+                .bind(menuQueue())
+                .to(restaurantExchange())
+                .with(menuRoutingKey);
+    }
+
     @Bean
     public RabbitMqEventPublisher EventPublisher(RabbitTemplate template) {
-        return new RabbitMqEventPublisher(template, "restaurantExchange");
+        return new RabbitMqEventPublisher(template, restaurantExchangeName);
     }
 
     @Bean
