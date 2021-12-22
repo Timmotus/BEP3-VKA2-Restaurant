@@ -1,11 +1,7 @@
 package nl.teamtwee.bep3.restaurant.menu.core.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import nl.teamtwee.bep3.restaurant.menu.core.domain.event.MenuEvent;
-import nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web.request.PizzaRequest;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,66 +14,28 @@ import java.util.UUID;
 @Setter
 @Document
 @ToString
+@NoArgsConstructor
 public class Pizza {
   @Id
   private UUID id;
   private String name;
   private List<Ingredient> ingredients;
-  private List<String> options;
+  private List<PizzaOptions> options;
+  private PizzaSizes size;
   private double price;
   private int quantity;
 
   @Transient
   private List<MenuEvent> events = new ArrayList<>();
 
-  public Pizza(){
-
-  }
-
-  public Pizza(UUID id, String name, List<Ingredient> ingredients, double price, int quantity) {
-    this.id = id;
+  public Pizza(String name, List<Ingredient> ingredients, List<PizzaOptions> options, PizzaSizes size, double price, int quantity) {
+    this.id = UUID.randomUUID();
     this.name = name;
     this.ingredients = ingredients;
-    this.price = price;
-    this.quantity = quantity;
-  }
-
-  public Pizza(String pizzaName, double price) {
-    this.name = pizzaName;
-    this.price = price;
-  }
-
-  public Pizza(String pizzaName, List<String> options) {
-    this.name = String.valueOf(pizzaName);
     this.options = options;
-  }
-
-  public Pizza(String name, List<Ingredient> ingredients, double price, int quantity) {
-    this.id = UUID.randomUUID();
-    this.name = name;
-    this.ingredients = ingredients;
+    this.size = size;
     this.price = price;
     this.quantity = quantity;
-  }
-
-  public Pizza(PizzaRequest pizzaRequest) {
-    this.id = UUID.randomUUID();
-    this.name = pizzaRequest.name;
-    this.ingredients = new ArrayList<>();
-    for (String string : pizzaRequest.ingredients) {
-      this.ingredients.add(new Ingredient(string));
-    }
-    this.price = pizzaRequest.price;
-    this.quantity = pizzaRequest.quantity;
-
-  }
-
-  public Pizza(Pizza pizza) {
-    this.id = pizza.getId();
-    this.name = pizza.getName();
-    this.ingredients = pizza.getIngredients();
-    this.price = pizza.getPrice();
-    this.quantity = pizza.getQuantity();
   }
 
   public List<Ingredient> getIngredients() {

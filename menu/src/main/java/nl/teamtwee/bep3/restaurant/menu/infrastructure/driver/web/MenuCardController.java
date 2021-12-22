@@ -29,19 +29,21 @@ public class MenuCardController {
 
     @PostMapping("admin/addmenu")
     public Pizza adminAddPizza(@Valid @RequestBody AdminAddMenuRequest request) {
+        //TO DO: HANDLE DUPLICATES
         return this.menuCommandHandler
-                .handle(new AdminCreateMenu(request.name, request.ingredients, request.options, request.price, request.quantity));
+                .handle(new AdminCreateMenu(request.name, request.ingredients, request.options,
+                        request.size, request.price, request.quantity));
     }
 
     @GetMapping("/{pizzaname}")
     public Pizza getItemById(@PathVariable String pizzaname) {
-      Pizza pizza = this.menuQueryHandler.handle(new GetPizzaDetailsByName(pizzaname));
-//      System.out.println(pizza.toString());
-      return pizza;
+        //TO DO: give bad status if pizza not found..
+      return this.menuQueryHandler.handle(new GetPizzaDetailsByName(pizzaname));
     }
 
     @GetMapping("/all")
     public List<Pizza> getAllPizza() {
+        //TO DO: give bad status if list is empty
         return this.menuQueryHandler.handle();
     }
 

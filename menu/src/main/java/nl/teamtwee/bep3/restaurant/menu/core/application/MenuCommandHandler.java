@@ -24,9 +24,8 @@ public class MenuCommandHandler {
     }
 
     public Pizza handle(AdminCreateMenu command) {
-        Pizza pizza = new Pizza(command.getName(), command.getIngredients(), command.getPrice(),
-                command.getQuantity());
-        // this.publishEventsFor(pizza);
+        Pizza pizza = new Pizza(command.getName(), command.getIngredients(),
+                command.getOptions(), command.getSize(), command.getPrice(), command.getQuantity());
         this.pizzaRepository.save(pizza);
 
         return pizza;
@@ -37,48 +36,19 @@ public class MenuCommandHandler {
         List<Pizza> pizzasAndTheirPrice = new ArrayList<>();
         List<String> pizzasWhichDontExist = new ArrayList<>();
         for (OrderedPizzaRequest op : orderedPizzas) {
-            if(pizzaRepository.existsByName(op.getPizzaName())){
-              Pizza pizza = pizzaRepository.findPizzaByName(op.getPizzaName());
-//                Pizza pizza = new Pizza(pizzaRepository.findPizzaByName(op.getPizzaName()));
-                pizzasAndTheirPrice.add(new Pizza(pizza.getName(), pizza.getPrice()));
+            if (pizzaRepository.existsByName(op.getPizzaName())) {
+                Pizza pizza = pizzaRepository.findPizzaByName(op.getPizzaName());
+                pizzasAndTheirPrice.add(new Pizza(pizza.getName(), pizza.getIngredients(),
+                        pizza.getOptions(), pizza.getSize(), pizza.getPrice(), pizza.getQuantity()));
                 orderedPizzaResponse.setPizzasAndTheirPrice(pizzasAndTheirPrice);
                 orderedPizzaResponse.setPizzasWhichDontExist(pizzasWhichDontExist);
                 orderedPizzaResponse.setOrderCanBeMade(true);
-            }
-            else{
+            } else {
                 pizzasWhichDontExist.add(op.getPizzaName());
                 orderedPizzaResponse.setPizzasWhichDontExist(pizzasWhichDontExist);
                 orderedPizzaResponse.setOrderCanBeMade(false);
             }
-            return ResponseEntity.ok(orderedPizzaResponse);
         }
-
-//    public Object handle(AvailablePizza command) {
-//        List<Pizza> pizzas = new ArrayList<>();
-//        command.getPizzas().forEach(name -> pizzas.add(new Pizza(name, new ArrayList<>(), 10, 10)));
-//        publishEventsFor(pizzas);
-//        return pizzas;
-//    }
-//
-//    public Object handle(IngredientsChecked command) {
-//        publishEventsFor(command.checkEnoughIngredients());
-//        return null;
-//
-//    }
-
-    // Moet nog gemaakt worden
-//    private void publishEventsFor(boolean ingredientsChecked) {
-        // List<MenuEvent> events = ingredientsChecked.listEvents();
-        // events.forEach(eventPublisher::publish);
-        // ingredientsChecked.clearEvents();
-        return null;
+        return ResponseEntity.ok(orderedPizzaResponse);
     }
-
-//    private void publishEventsFor(List<Pizza> pizza) {
-//        for (Pizza p : pizza) {
-//            List<MenuEvent> events = p.listEvents();
-//            events.forEach(eventPublisher::publish);
-//            p.clearEvents();
-//        }
-//    }
 }
