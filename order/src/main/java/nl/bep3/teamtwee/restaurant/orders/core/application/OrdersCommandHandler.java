@@ -1,81 +1,64 @@
 package nl.bep3.teamtwee.restaurant.orders.core.application;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.CompleteOrderPayment;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.FailedOrderPayment;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.RegisterOrder;
+import nl.bep3.teamtwee.restaurant.orders.core.domain.MenuItem;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.Order;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.Order.OrderBuilder;
-import nl.bep3.teamtwee.restaurant.orders.core.domain.OrderItem;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderEvent;
-import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderMenuItemAvailableEvent;
-import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderReserveIngredientEvent;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFound;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.messaging.OrderEventPublisher;
+import nl.bep3.teamtwee.restaurant.orders.core.ports.storage.KitchenRepository;
+import nl.bep3.teamtwee.restaurant.orders.core.ports.storage.MenuRepository;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.storage.OrderRepository;
+import nl.bep3.teamtwee.restaurant.orders.core.ports.storage.PaymentRepository;
 
+@AllArgsConstructor
 @Service
 public class OrdersCommandHandler {
     private final OrderRepository repository;
+    private final MenuRepository menuGateway;
+    private final KitchenRepository kitchenGateway;
+    private final PaymentRepository paymentGateway;
     private final OrderEventPublisher eventPublisher;
 
-    public OrdersCommandHandler(OrderRepository repository, OrderEventPublisher eventPublisher) {
-        this.repository = repository;
-        this.eventPublisher = eventPublisher;
-    }
-
-    // discuss availability over consistency
     public Order handle(RegisterOrder command) {
-        Set<String> itemNames = new HashSet<>();
-        command.getItems().forEach(item -> itemNames.add(item.getName()));
-        // TODO: get all itemNames from menuservice in one request, availability check
-        // TODO: validate if options are applicable to item
+        List<String> itemNames = command.getItemCounts()
+                .keySet()
+                .stream()
+                .collect(Collectors.toList());
+        List<MenuItem> menuItemsWithPrices = this.menuGateway.getMenuItemsByName(itemNames);
 
         OrderBuilder orderBuilder = Order.builder()
                 .zipCode(command.getZipCode())
                 .street(command.getStreet())
-                .streetNumber(command.getStreetNumber())
-                .paymentId(UUID.randomUUID()) // should be gotten from the payment request
-                .status("PAYMENT_REQUIRED");
+                .streetNumber(command.getStreetNumber());
+        // Merge menuItems and orderItems into order
+        menuItemsWithPrices.forEach(item -> orderBuilder.addItem(item.getName(),
+                item.getPrice(),
+                command.getItemCounts().get(item.getName())));
 
-        Object ret = this.eventPublisher
-                .publishSendAndReceive(new OrderMenuItemAvailableEvent(itemNames));
-        if (ret != null) {
-            System.out.println(ret);
-        } else {
-            System.out.println("no response from wherever");
-        }
-        // TODO: try to reserve ingredients at inventoryservice
-        // Map<String, Integer> ingredients = Map.of(
-        // "Test1", 100,
-        // "Test2", 200,
-        // "Test3", 300);
-        // Object ret = this.eventPublisher.publishSendAndReceive(new
-        // OrderReserveIngredientEvent(orderBuilder.getId(), ingredients));
-        // if (ret != null) {
-        // System.out.println(ret);
-        // } else {
-        // System.out.println("no response from wherever");
-        // }
+        // Reserve items with the kitchen, maybe want this to be asynchronous
+        UUID reservationId = this.kitchenGateway.createReservation(orderBuilder.getId(), itemNames);
 
-        // TODO: request payment
+        // Request a payment
+        UUID paymentId = this.paymentGateway.createPayment(
+                orderBuilder.getId(),
+                menuItemsWithPrices.stream().mapToLong(item -> item.getPrice()).sum());
 
-        // TODO: map ingredients and options from result to items
-        command.getItems().forEach(item -> {
-            Map<String, Integer> items = new HashMap<>();
-            itemNames.forEach(itemName -> items.put(itemName, 100));
-            orderBuilder.addItem(new OrderItem(item.getName(), item.getCount(), items, item.getOptions()));
-        });
-
-        Order order = orderBuilder.build();
+        Order order = orderBuilder
+                .paymentId(paymentId)
+                .reservationId(reservationId)
+                .status("PAYMENT_REQUIRED")
+                .build();
 
         // maybe throw event that an order is created
 
@@ -87,12 +70,14 @@ public class OrdersCommandHandler {
     public void handle(CompleteOrderPayment command) {
         Order order = findOrderById(command.getOrderId());
         order.setStatus("PAYMENT_COMPLETE");
+        // TODO: publish event for delivery
         this.repository.save(order);
     }
 
     public void handle(FailedOrderPayment command) {
         Order order = findOrderById(command.getOrderId());
         order.setStatus("PAYMENT_FAILED");
+        // TODO: process order failure
         this.repository.save(order);
     }
 

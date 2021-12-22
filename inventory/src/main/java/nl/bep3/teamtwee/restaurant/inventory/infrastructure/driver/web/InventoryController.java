@@ -1,6 +1,6 @@
 package nl.bep3.teamtwee.restaurant.inventory.infrastructure.driver.web;
 
-import nl.bep3.teamtwee.inventory.core.application.command.*;
+import nl.bep3.teamtwee.restaurant.inventory.core.application.command.*;
 import nl.bep3.teamtwee.restaurant.inventory.core.application.command.*;
 import nl.bep3.teamtwee.restaurant.inventory.infrastructure.driver.web.request.RegisterIngredientRequest;
 import nl.bep3.teamtwee.restaurant.inventory.infrastructure.driver.web.request.ReserveIngredientRequest;
@@ -109,7 +109,7 @@ public class InventoryController {
 
     @PostMapping("/reserve")
     public ResponseEntity<Void> reserveIngredientGroup(@Valid @RequestBody List<ReserveIngredientRequest> ingredientList) {
-        this.commandHandler.handle(new ReserveIngredients(ingredientList));
+        // this.commandHandler.handle(new ReserveIngredients(ingredientList));
         return ResponseEntity.noContent().build();
     }
 
