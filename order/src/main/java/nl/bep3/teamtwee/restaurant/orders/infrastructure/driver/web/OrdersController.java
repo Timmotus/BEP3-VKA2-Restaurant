@@ -23,7 +23,7 @@ import nl.bep3.teamtwee.restaurant.orders.core.application.command.RegisterOrder
 import nl.bep3.teamtwee.restaurant.orders.core.application.query.GetOrderById;
 import nl.bep3.teamtwee.restaurant.orders.core.application.query.ListOrders;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.Order;
-import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFound;
+import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFoundException;
 import nl.bep3.teamtwee.restaurant.orders.infrastructure.driver.web.request.RegisterOrderRequest;
 
 /*
@@ -68,7 +68,7 @@ public class OrdersController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<Void> handleOrderNotFound(OrderNotFound exception) {
+    public ResponseEntity<Void> handleOrderNotFound(OrderNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 

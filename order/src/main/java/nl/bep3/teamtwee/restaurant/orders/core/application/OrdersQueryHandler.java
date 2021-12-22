@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import nl.bep3.teamtwee.restaurant.orders.core.application.query.GetOrderById;
 import nl.bep3.teamtwee.restaurant.orders.core.application.query.ListOrders;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.Order;
-import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFound;
+import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFoundException;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.storage.OrderRepository;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class OrdersQueryHandler {
 
     public Order handle(GetOrderById query) {
         return this.repository.findById(query.getId())
-                .orElseThrow(() -> new OrderNotFound(query.getId().toString()));
+                .orElseThrow(() -> new OrderNotFoundException(query.getId().toString()));
     }
 
     public List<Order> handle(ListOrders query) {

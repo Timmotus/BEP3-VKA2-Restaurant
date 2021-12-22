@@ -14,7 +14,7 @@ import nl.bep3.teamtwee.restaurant.orders.core.domain.MenuItem;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.Order;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.Order.OrderBuilder;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderEvent;
-import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFound;
+import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFoundException;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.messaging.OrderEventPublisher;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.storage.KitchenRepository;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.storage.MenuRepository;
@@ -85,7 +85,7 @@ public class OrdersCommandHandler {
         // should maybe log instead of throw error for our current use cases
         return this.repository
                 .findById(id)
-                .orElseThrow(() -> new OrderNotFound(
+                .orElseThrow(() -> new OrderNotFoundException(
                         String.format("Order with id '{}' not found.", id)));
     }
 

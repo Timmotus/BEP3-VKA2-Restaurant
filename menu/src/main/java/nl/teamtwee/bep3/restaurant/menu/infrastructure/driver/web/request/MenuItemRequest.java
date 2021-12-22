@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
-public class PizzaRequest {
+public class MenuItemRequest {
 
   @NotBlank
   public String name;
