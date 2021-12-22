@@ -40,10 +40,6 @@ public class OrdersController {
     private final OrdersCommandHandler commandHandler;
     private final OrdersQueryHandler queryHandler;
 
-    // post bestelling > beschikbaarheid opvragen > betaalaanvraag doen > reserveren
-    // ingredienten
-    // betaling gedaan > bestelling doorzetten naar de keuken
-
     public OrdersController(OrdersCommandHandler commandHandler, OrdersQueryHandler queryHandler) {
         this.commandHandler = commandHandler;
         this.queryHandler = queryHandler;
@@ -54,8 +50,8 @@ public class OrdersController {
         RegisterOrder order = new RegisterOrder(
                 request.zipCode,
                 request.street,
-                request.streetNumber);
-        request.items.forEach(item -> order.addItem(item.name, item.count, item.options));
+                request.streetNumber,
+                request.itemCounts);
         return this.commandHandler.handle(order);
     }
 

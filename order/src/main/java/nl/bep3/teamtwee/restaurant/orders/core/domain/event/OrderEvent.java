@@ -8,11 +8,11 @@ public abstract class OrderEvent {
     private final Instant eventDate = Instant.now();
 
     public UUID getEventId() {
-        return eventId;
+        return this.eventId;
     }
 
     public Instant getEventDate() {
-        return eventDate;
+        return this.eventDate;
     }
 
     public abstract String getEventKey();
