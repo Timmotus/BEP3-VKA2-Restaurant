@@ -22,6 +22,6 @@ public class MenuQueryHandler {
 
     public MenuItem handle(GetMenuItemByName query) {
         return this.repository.findByName(query.getName())
-                .orElseThrow(() -> new MenuItemNotFoundException("MenuItem '" + query.getName() + "' not found"));
+                .orElseThrow(() -> new MenuItemNotFoundException(query.getName()));
     }
 }

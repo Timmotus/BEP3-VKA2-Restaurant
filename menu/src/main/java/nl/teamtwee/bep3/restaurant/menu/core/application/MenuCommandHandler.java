@@ -27,7 +27,7 @@ public class MenuCommandHandler {
         Map<String, Long> items = new HashMap<>();
         for (String name : command.getNames()) {
             MenuItem item = this.repository.findByName(name)
-                    .orElseThrow(() -> new MenuItemNotFoundException("MenuItem '" + name + "' not found"));
+                    .orElseThrow(() -> new MenuItemNotFoundException(name));
             items.put(name, Double.valueOf(item.getPrice()).longValue());
         }
         return items;
