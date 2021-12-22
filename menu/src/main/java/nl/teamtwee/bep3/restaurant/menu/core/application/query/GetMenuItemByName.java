@@ -1,13 +1,10 @@
 package nl.teamtwee.bep3.restaurant.menu.core.application.query;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
-public class GetPizzaDetailsByName {
+public class GetMenuItemByName {
     private String name;
-
-    public GetPizzaDetailsByName(String name) {
-        this.name = name;
-    }
-
 }

@@ -46,7 +46,7 @@ public class Order {
 
     public void completePayment() {
         this.status = "PAYMENT_COMPLETE";
-        this.events.add(new OrderInitiateDelivery(this.id));
+        this.events.add(new OrderInitiateDelivery(this.id, "READY_TO_BE_DELIVERED"));
     }
 
     public static OrderBuilder builder() {
@@ -63,7 +63,7 @@ public class Order {
         private String street;
         private Long streetNumber;
         private String status;
-        private HashMap<String, OrderItem> items;
+        private Map<String, OrderItem> items;
 
         public OrderBuilder() {
             this.id = UUID.randomUUID();
@@ -110,7 +110,7 @@ public class Order {
             return this;
         }
 
-        public OrderBuilder addItem(String name, Long price, Long count) {
+        public OrderBuilder addItem(String name, Double price, Long count) {
             this.items.put(name, new OrderItem(price, count));
             return this;
         }

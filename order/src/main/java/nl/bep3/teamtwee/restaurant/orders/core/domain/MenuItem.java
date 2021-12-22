@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MenuItem {
     private String name;
-    private Long price;
+    private Double price;
 }

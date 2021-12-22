@@ -9,6 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Document
 public class OrderItem {
-    private Long price;
+    private Double price;
     private Long count;
 }

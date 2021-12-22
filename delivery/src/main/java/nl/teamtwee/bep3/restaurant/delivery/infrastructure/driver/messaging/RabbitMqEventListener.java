@@ -17,8 +17,8 @@ public class RabbitMqEventListener {
     @RabbitListener(queues = "#{'${messaging.queue.delivery}'}")
     void listen(DeliveryKeywordEvent event) throws InterruptedException {
         switch (event.eventKey) {
-            case "keywords.delivery":
-                this.commandHandler.handle(new DeliveryStatus(event.orderId, event.deliveryStatusEnum));
+            case "delivery.order.deliver":
+                this.commandHandler.handle(new DeliveryStatus(event.orderId, event.deliveryStatus));
                 break;
         }
     }

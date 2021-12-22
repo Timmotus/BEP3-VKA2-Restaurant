@@ -1,7 +1,7 @@
 package nl.bep3.teamtwee.restaurant.orders.infrastructure.driver.web;
 
-import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -17,58 +17,50 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.restaurant.orders.core.application.OrdersCommandHandler;
 import nl.bep3.teamtwee.restaurant.orders.core.application.OrdersQueryHandler;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.RegisterOrder;
 import nl.bep3.teamtwee.restaurant.orders.core.application.query.GetOrderById;
 import nl.bep3.teamtwee.restaurant.orders.core.application.query.ListOrders;
-import nl.bep3.teamtwee.restaurant.orders.core.domain.Order;
-import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFound;
+import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFoundException;
 import nl.bep3.teamtwee.restaurant.orders.infrastructure.driver.web.request.RegisterOrderRequest;
+import nl.bep3.teamtwee.restaurant.orders.infrastructure.driver.web.response.OrderResponse;
 
-/*
-    Note that we are combining ideas of REST and CQRS
-    in a task-based API.
-    We are still resource-centric, but allow verb-like
-    commands to be added as sub-resources using POST.
-
-    See: https://codeopinion.com/is-a-rest-api-with-cqrs-possible/
- */
+@AllArgsConstructor
 @RestController
 @RequestMapping("/orders")
 public class OrdersController {
     private final OrdersCommandHandler commandHandler;
     private final OrdersQueryHandler queryHandler;
 
-    public OrdersController(OrdersCommandHandler commandHandler, OrdersQueryHandler queryHandler) {
-        this.commandHandler = commandHandler;
-        this.queryHandler = queryHandler;
+    @GetMapping
+    public ResponseEntity<?> findOrders(
+            @RequestParam(required = false) String orderBy,
+            @RequestParam(required = false) String direction) {
+        return ResponseEntity.ok(this.queryHandler
+                .handle(new ListOrders(orderBy, direction)).stream()
+                .map(order -> new OrderResponse(order))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findOrderById(@PathVariable UUID id) {
+        return ResponseEntity.ok(new OrderResponse(this.queryHandler.handle(new GetOrderById(id))));
     }
 
     @PostMapping
-    public Order registerOrder(@Valid @RequestBody RegisterOrderRequest request) {
+    public ResponseEntity<?> registerOrder(@Valid @RequestBody RegisterOrderRequest request) {
         RegisterOrder order = new RegisterOrder(
                 request.zipCode,
                 request.street,
                 request.streetNumber,
                 request.itemCounts);
-        return this.commandHandler.handle(order);
-    }
-
-    @GetMapping("/{id}")
-    public Order findOrderById(@PathVariable UUID id) {
-        return this.queryHandler.handle(new GetOrderById(id));
-    }
-
-    @GetMapping
-    public List<Order> findOrders(
-            @RequestParam(required = false) String orderBy,
-            @RequestParam(required = false) String direction) {
-        return this.queryHandler.handle(new ListOrders(orderBy, direction));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.commandHandler.handle(order));
     }
 
     @ExceptionHandler
-    public ResponseEntity<Void> handleOrderNotFound(OrderNotFound exception) {
+    public ResponseEntity<Void> handleOrderNotFound(OrderNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 

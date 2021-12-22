@@ -14,7 +14,7 @@ import nl.bep3.teamtwee.restaurant.orders.core.domain.MenuItem;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.Order;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.Order.OrderBuilder;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderEvent;
-import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFound;
+import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFoundException;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.messaging.OrderEventPublisher;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.storage.KitchenRepository;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.storage.MenuRepository;
@@ -47,19 +47,20 @@ public class OrdersCommandHandler {
                 command.getItemCounts().get(item.getName())));
 
         // Reserve items with the kitchen, maybe want this to be asynchronous
-        UUID reservationId = this.kitchenGateway.createReservation(orderBuilder.getId(), itemNames);
+        // UUID reservationId = this.kitchenGateway.createReservation(orderBuilder.getId(), itemNames);
 
         // Request a payment
-        UUID paymentId = this.paymentGateway.createPayment(
-                orderBuilder.getId(),
-                menuItemsWithPrices.stream().mapToLong(item -> item.getPrice()).sum());
+        // UUID paymentId = this.paymentGateway.createPayment(
+        //         orderBuilder.getId(),
+        //         menuItemsWithPrices.stream().mapToLong(item -> item.getPrice()).sum());
 
         Order order = orderBuilder
-                .paymentId(paymentId)
-                .reservationId(reservationId)
+                .paymentId(UUID.randomUUID())
+                .reservationId(UUID.randomUUID())
                 .status("PAYMENT_REQUIRED")
                 .build();
 
+        order.completePayment();
         // maybe throw event that an order is created
 
         this.publishEvents(order);
@@ -84,7 +85,7 @@ public class OrdersCommandHandler {
         // should maybe log instead of throw error for our current use cases
         return this.repository
                 .findById(id)
-                .orElseThrow(() -> new OrderNotFound(
+                .orElseThrow(() -> new OrderNotFoundException(
                         String.format("Order with id '{}' not found.", id)));
     }
 

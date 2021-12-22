@@ -8,6 +8,6 @@ public class DeliveryKeywordEvent {
   public UUID eventId;
   public String eventKey;
   public Instant eventDate;
-  public DeliveryStatusEnum deliveryStatusEnum;
+  public DeliveryStatusEnum deliveryStatus;
   public UUID orderId;
 }
