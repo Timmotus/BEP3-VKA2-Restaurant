@@ -31,15 +31,16 @@ public class DeliveryCommandHandler {
                 case READY_TO_BE_DELIVERED:
                     delivery.setDeliveryStatusEnum(DELIVERY_STARTED);
                     deliveryRepository.save(delivery);
-                    publishEventsFor(delivery);
-                    Thread.sleep(120000);
+                    Thread.sleep(1200);
                     break;
                 case DELIVERY_STARTED:
                     delivery.setDeliveryStatusEnum(DELIVERED_SUCCESSFULLY);
                     deliveryRepository.save(delivery);
-                    Thread.sleep(120000);
+                    Thread.sleep(1200);
                     break;
             }
+        System.out.println(delivery.getDeliveryStatusEnum());
+        System.out.println("We got the message, we delivered!");
     }
 
     private void publishEventsFor(Delivery delivery) {

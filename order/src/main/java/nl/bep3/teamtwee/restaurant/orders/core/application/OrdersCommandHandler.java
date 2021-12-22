@@ -60,6 +60,7 @@ public class OrdersCommandHandler {
                 .status("PAYMENT_REQUIRED")
                 .build();
 
+        order.completePayment();
         // maybe throw event that an order is created
 
         this.publishEvents(order);

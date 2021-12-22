@@ -46,7 +46,7 @@ public class Order {
 
     public void completePayment() {
         this.status = "PAYMENT_COMPLETE";
-        this.events.add(new OrderInitiateDelivery(this.id));
+        this.events.add(new OrderInitiateDelivery(this.id, "READY_TO_BE_DELIVERED"));
     }
 
     public static OrderBuilder builder() {

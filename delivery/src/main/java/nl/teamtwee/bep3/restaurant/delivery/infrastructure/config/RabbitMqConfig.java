@@ -30,11 +30,11 @@ public class RabbitMqConfig {
     @Value("${messaging.exchange.restaurant}")
     private String restaurantExchangeName;
 
-    @Value("${messaging.queue.menu}")
-    private String menuQueueName;
+    @Value("${messaging.queue.delivery}")
+    private String deliveryQueueName;
 
-    @Value("${messaging.routing-key.menu}")
-    private String menuRoutingKey;
+    @Value("${messaging.routing-key.delivery}")
+    private String deliveryRoutingKey;
 
     @Bean
     public TopicExchange restaurantExchange() {
@@ -42,16 +42,16 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public Queue menuQueue() {
-        return QueueBuilder.durable(menuQueueName).build();
+    public Queue deliveryQueue() {
+        return QueueBuilder.durable(deliveryQueueName).build();
     }
 
     @Bean
-    public Binding menuBinding() {
+    public Binding deliveryBinding() {
         return BindingBuilder
-                .bind(menuQueue())
+                .bind(deliveryQueue())
                 .to(restaurantExchange())
-                .with(menuRoutingKey);
+                .with(deliveryRoutingKey);
     }
 
     @Bean
