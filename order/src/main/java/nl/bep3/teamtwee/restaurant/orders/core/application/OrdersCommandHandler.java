@@ -69,14 +69,13 @@ public class OrdersCommandHandler {
 
     public void handle(CompleteOrderPayment command) {
         Order order = findOrderById(command.getOrderId());
-        order.setStatus("PAYMENT_COMPLETE");
-        // TODO: publish event for delivery
+        order.completePayment();
+        this.publishEvents(order);
         this.repository.save(order);
     }
 
     public void handle(FailedOrderPayment command) {
         Order order = findOrderById(command.getOrderId());
-        order.setStatus("PAYMENT_FAILED");
         // TODO: process order failure
         this.repository.save(order);
     }

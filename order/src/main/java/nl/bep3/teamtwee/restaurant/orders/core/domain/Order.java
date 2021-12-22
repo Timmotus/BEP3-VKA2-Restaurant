@@ -13,8 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderEvent;
+import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderInitiateDelivery;
 
 @Getter
 @Document
@@ -29,7 +29,6 @@ public class Order {
     private String street;
     private Long streetNumber;
 
-    @Setter
     private String status;
 
     private Map<String, OrderItem> items;
@@ -43,6 +42,11 @@ public class Order {
 
     public void clearEvents() {
         this.events.clear();
+    }
+
+    public void completePayment() {
+        this.status = "PAYMENT_COMPLETE";
+        this.events.add(new OrderInitiateDelivery(this.id));
     }
 
     public static OrderBuilder builder() {
