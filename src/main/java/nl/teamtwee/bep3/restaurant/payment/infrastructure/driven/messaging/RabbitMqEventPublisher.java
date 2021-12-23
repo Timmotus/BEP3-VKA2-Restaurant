@@ -8,15 +8,17 @@ public class RabbitMqEventPublisher implements PaymentEventPublisher {
     private final RabbitTemplate rabbitTemplate;
     private final String paymentBoardExchange;
 
-    public RabbitMqEventPublisher(
-            RabbitTemplate rabbitTemplate,
-            String paymentBoardExchange
-    ) {
+    public RabbitMqEventPublisher(RabbitTemplate rabbitTemplate, String paymentBoardExchange) {
         this.rabbitTemplate = rabbitTemplate;
         this.paymentBoardExchange = paymentBoardExchange;
     }
 
     public void publish(PaymentEvent event) {
         this.rabbitTemplate.convertAndSend(paymentBoardExchange, event.getEventKey(), event);
+    }
+
+    @Override
+    public Object publishSendAndReceive(PaymentEvent event) {
+        return this.rabbitTemplate.convertSendAndReceive(paymentBoardExchange, event.getEventKey(), event);
     }
 }

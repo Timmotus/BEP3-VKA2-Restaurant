@@ -1,4 +1,4 @@
-package nl.teamtwee.bep3.restaurant.payment.infrastructure.driven.messaging;
+/*package nl.teamtwee.bep3.restaurant.payment.infrastructure.driven.messaging;
 
 
 import nl.teamtwee.bep3.restaurant.payment.core.application.PaymentCommandHandler;
@@ -22,4 +22,4 @@ public class RabbitMqEventListener {
                 new AddPayment(event.orderId, event.cost)
         );
         }
-    }
+    }*/

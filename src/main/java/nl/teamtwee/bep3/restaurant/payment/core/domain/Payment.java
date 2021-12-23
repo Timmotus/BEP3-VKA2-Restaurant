@@ -23,14 +23,14 @@ public class Payment {
     @Indexed
     private UUID orderId;
     @Indexed
-    private double cost;
+    private long cost;
     @Indexed
     private boolean payed;
     @Transient
     private List<PaymentEvent> events = new ArrayList<>();
 
 
-    public Payment(UUID orderId, double cost){
+    public Payment(UUID orderId, long cost){
         this.id =  UUID.randomUUID();
         this.orderId =  orderId;
         this.cost = cost;
@@ -41,6 +41,8 @@ public class Payment {
     public void EditPayment(boolean payed){
         if(payed == true){
             setPayed(payed);
+            
+
             //naar order dat er betaald is
         }else{
             //naar order dat er niet betaald is

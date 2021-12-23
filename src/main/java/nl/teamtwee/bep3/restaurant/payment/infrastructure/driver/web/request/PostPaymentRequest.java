@@ -6,5 +6,6 @@ import java.util.UUID;
 public class PostPaymentRequest {
     @NotBlank
     public UUID orderId;
+    public long cost;
 
 }
