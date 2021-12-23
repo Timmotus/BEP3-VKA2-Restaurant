@@ -1,5 +1,6 @@
 package nl.bep3.teamtwee.kitchen.core.application;
 
+import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.kitchen.core.application.query.GetOrderById;
 import nl.bep3.teamtwee.kitchen.core.application.query.ListOrders;
 import nl.bep3.teamtwee.kitchen.core.domain.Order;
@@ -11,12 +12,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class OrdersQueryHandler {
     private final OrderRepository repository;
-
-    public OrdersQueryHandler(OrderRepository repository) {
-        this.repository = repository;
-    }
 
     public Order handle(GetOrderById query) {
         return this.repository.findById(query.getId())

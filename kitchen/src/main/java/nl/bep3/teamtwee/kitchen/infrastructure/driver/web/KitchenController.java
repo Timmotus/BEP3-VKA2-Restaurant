@@ -1,5 +1,6 @@
 package nl.bep3.teamtwee.kitchen.infrastructure.driver.web;
 
+import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.kitchen.core.application.OrdersCommandHandler;
 import nl.bep3.teamtwee.kitchen.core.application.OrdersQueryHandler;
 import nl.bep3.teamtwee.kitchen.core.application.command.DeleteOrder;
@@ -21,15 +22,11 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/kitchen")
 public class KitchenController {
     private final OrdersCommandHandler commandHandler;
     private final OrdersQueryHandler queryHandler;
-
-    public KitchenController(OrdersCommandHandler commandHandler, OrdersQueryHandler queryHandler) {
-        this.commandHandler = commandHandler;
-        this.queryHandler = queryHandler;
-    }
 
     @PostMapping
     public ResponseEntity<Order> uploadOrder(@Valid @RequestBody UploadOrderRequest request) {

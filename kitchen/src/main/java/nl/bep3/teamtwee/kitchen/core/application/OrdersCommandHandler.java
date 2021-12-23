@@ -1,5 +1,6 @@
 package nl.bep3.teamtwee.kitchen.core.application;
 
+import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.kitchen.core.application.command.DeleteOrder;
 import nl.bep3.teamtwee.kitchen.core.application.command.UpdateOrder;
 import nl.bep3.teamtwee.kitchen.core.application.command.UploadOrder;
@@ -13,14 +14,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class OrdersCommandHandler {
     private final OrderRepository repository;
     private final OrderEventPublisher eventPublisher;
-
-    public OrdersCommandHandler(OrderRepository repository, OrderEventPublisher eventPublisher) {
-        this.repository = repository;
-        this.eventPublisher = eventPublisher;
-    }
 
     public Order handle(UploadOrder command) {
         Order order = new Order();
