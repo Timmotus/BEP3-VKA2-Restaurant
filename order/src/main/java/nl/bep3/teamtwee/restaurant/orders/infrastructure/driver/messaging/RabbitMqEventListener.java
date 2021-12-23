@@ -20,6 +20,7 @@ public class RabbitMqEventListener {
 
     @RabbitListener(queues = "#{'${messaging.queue.order-payments}'}")
     void listen(OrderPaymentEvent event) {
+        System.out.println("received paymentevent");
         switch (event.getEventKey()) {
             case "payments.order.completed":
                 this.commandHandler.handle(

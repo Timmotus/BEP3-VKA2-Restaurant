@@ -9,5 +9,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PaymentRequest {
     private UUID orderId;
-    private Long amount;
+    private Double amount;
 }

@@ -54,16 +54,14 @@ public class OrdersCommandHandler {
         UUID reservationId = this.kitchenGateway.createReservation(orderBuilder.getId(), command.getItemCounts());
 
         // Request a payment
-        // UUID paymentId = this.paymentGateway.createPayment(
-        //         orderBuilder.getId(),
-        //         menuItemsWithPrices.stream().mapToLong(item -> item.getPrice()).sum());
+        UUID paymentId = this.paymentGateway.createPayment(
+                orderBuilder.getId(),
+                menuItemsWithPrices.stream().mapToDouble(item -> item.getPrice()).sum());
 
         Order order = orderBuilder
-                .paymentId(UUID.randomUUID())
+                .paymentId(paymentId)
                 .reservationId(reservationId)
                 .build();
-
-        order.completePayment();
         // maybe throw event that an order is created
 
         this.publishEventsAndSave(order);
