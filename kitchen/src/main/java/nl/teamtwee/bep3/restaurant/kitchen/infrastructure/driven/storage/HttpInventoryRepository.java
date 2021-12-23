@@ -1,10 +1,8 @@
 package nl.teamtwee.bep3.restaurant.kitchen.infrastructure.driven.storage;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 
 import lombok.AllArgsConstructor;
 import nl.teamtwee.bep3.restaurant.kitchen.core.port.storage.InventoryRepository;
-import nl.teamtwee.bep3.restaurant.kitchen.infrastructure.driven.storage.dto.IngredientResult;
 
 @AllArgsConstructor
 public class HttpInventoryRepository implements InventoryRepository {
@@ -28,10 +25,10 @@ public class HttpInventoryRepository implements InventoryRepository {
         HttpEntity<Map<String, Long>> requestEntity = new HttpEntity<>(ingredientAmountMap, requestHeaders);
 
         // should also check if any items not found, deal with errors
-        List<IngredientResult> result = this.client.exchange(
+        this.client.exchange(
                 uri,
                 HttpMethod.POST,
                 requestEntity,
-                new ParameterizedTypeReference<List<IngredientResult>>(){}).getBody();
+                Void.class);
     }
 }
