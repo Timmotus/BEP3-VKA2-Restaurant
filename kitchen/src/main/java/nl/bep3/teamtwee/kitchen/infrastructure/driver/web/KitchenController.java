@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.kitchen.core.application.OrdersCommandHandler;
 import nl.bep3.teamtwee.kitchen.core.application.OrdersQueryHandler;
 import nl.bep3.teamtwee.kitchen.core.application.command.DeleteOrder;
+import nl.bep3.teamtwee.kitchen.core.application.command.ProceedWithOrder;
 import nl.bep3.teamtwee.kitchen.core.application.command.UpdateOrder;
 import nl.bep3.teamtwee.kitchen.core.application.command.UploadOrder;
 import nl.bep3.teamtwee.kitchen.core.application.query.GetOrderById;
 import nl.bep3.teamtwee.kitchen.core.application.query.ListOrders;
 import nl.bep3.teamtwee.kitchen.core.domain.Order;
+import nl.bep3.teamtwee.kitchen.core.domain.OrderStatus;
 import nl.bep3.teamtwee.kitchen.core.domain.exception.OrderNotFound;
 import nl.bep3.teamtwee.kitchen.infrastructure.driver.web.request.UpdateOrderRequest;
 import nl.bep3.teamtwee.kitchen.infrastructure.driver.web.request.UploadOrderRequest;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.UUID;
 
@@ -67,6 +70,21 @@ public class KitchenController {
     public ResponseEntity<Void> deleteOrderById(@PathVariable UUID id) {
         this.commandHandler.handle(new DeleteOrder(id));
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/proceed")
+    public ResponseEntity<Order> proceedWithOrder(
+            @PathVariable UUID id,
+            @RequestParam(required = false) @Pattern(regexp = "RECEIVED|PREPARATION|BAKING|READY|COMPLETE") String orderStatus
+    ) {
+        return ResponseEntity.ok(
+                this.commandHandler.handle(
+                        new ProceedWithOrder(
+                                id,
+                                OrderStatus.valueOf(orderStatus)
+                        )
+                )
+        );
     }
 
     // Handlers

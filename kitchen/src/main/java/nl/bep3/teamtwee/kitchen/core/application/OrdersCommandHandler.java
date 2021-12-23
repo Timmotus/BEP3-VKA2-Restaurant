@@ -2,6 +2,7 @@ package nl.bep3.teamtwee.kitchen.core.application;
 
 import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.kitchen.core.application.command.DeleteOrder;
+import nl.bep3.teamtwee.kitchen.core.application.command.ProceedWithOrder;
 import nl.bep3.teamtwee.kitchen.core.application.command.UpdateOrder;
 import nl.bep3.teamtwee.kitchen.core.application.command.UploadOrder;
 import nl.bep3.teamtwee.kitchen.core.domain.Order;
@@ -44,6 +45,19 @@ public class OrdersCommandHandler {
 
         this.publishEventsFor(order);
         this.repository.delete(order);
+    }
+
+    public Order handle(ProceedWithOrder command) {
+        Order order = this.repository.findById(command.getId())
+                .orElseThrow(() -> new OrderNotFound(command.getId().toString()));
+
+        if (command.getOrderStatus() == null) order.proceed();
+        else order.proceedTo(command.getOrderStatus());
+
+        this.publishEventsFor(order);
+        this.repository.delete(order);
+
+        return order;
     }
 
     private void publishEventsFor(Order order) {
