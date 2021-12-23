@@ -1,7 +1,7 @@
 package nl.bep3.teamtwee.restaurant.orders.infrastructure.driven.storage;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.HttpEntity;
@@ -21,8 +21,8 @@ public class HttpKitchenRepository implements KitchenRepository {
     private final RestTemplate client;
 
     @Override
-    public UUID createReservation(UUID orderId, List<String> items) {
-        URI uri = URI.create(this.rootPath + "/kitchen/reservation");
+    public UUID createReservation(UUID orderId, Map<String, Long> items) {
+        URI uri = URI.create(this.rootPath + "/kitchen");
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<ReservationRequest> requestEntity = new HttpEntity<>(
@@ -36,7 +36,6 @@ public class HttpKitchenRepository implements KitchenRepository {
                 requestEntity,
                 ReservationResult.class).getBody();
 
-        return result.getReservationId();
+        return result.getId();
     }
-
 }

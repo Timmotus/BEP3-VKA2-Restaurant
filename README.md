@@ -1,3 +1,11 @@
+PORTS:
+Delivery: 8080
+Inventory: 8081
+Kitchen: 8082
+Menu: 8083
+Order: 8084
+Payment: 8085
+
 # BEP3-VKA2-Restaurant
 
 Inventory Service
