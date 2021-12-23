@@ -4,7 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class FindIngredientsByProductName {
-
     private final String productName;
     private final String orderBy;
     private final String direction;
@@ -16,5 +15,4 @@ public class FindIngredientsByProductName {
         this.orderBy = orderBy;
         this.direction = direction;
     }
-
 }

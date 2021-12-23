@@ -1,5 +1,6 @@
 package nl.bep3.teamtwee.inventory.infrastructure.driver.web;
 
+import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.inventory.core.application.command.*;
 import nl.bep3.teamtwee.inventory.infrastructure.driver.web.request.RegisterIngredientRequest;
 import nl.bep3.teamtwee.inventory.infrastructure.driver.web.request.UpdateIngredientRequest;
@@ -24,16 +25,11 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/inventory")
 public class InventoryController {
-
     private final IngredientsCommandHandler commandHandler;
     private final IngredientsQueryHandler queryHandler;
-
-    public InventoryController(IngredientsCommandHandler commandHandler, IngredientsQueryHandler queryHandler) {
-        this.commandHandler = commandHandler;
-        this.queryHandler = queryHandler;
-    }
 
     @PostMapping
     public ResponseEntity<Ingredient> registerIngredient(@Valid @RequestBody RegisterIngredientRequest request) {
@@ -125,5 +121,4 @@ public class InventoryController {
     public ResponseEntity<Void> handleDuplicate(DuplicateKeyException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
-
 }

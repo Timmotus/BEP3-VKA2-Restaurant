@@ -18,7 +18,6 @@ import java.util.UUID;
 @Setter
 @Document
 public class Ingredient {
-
     @Id
     private UUID id;
 

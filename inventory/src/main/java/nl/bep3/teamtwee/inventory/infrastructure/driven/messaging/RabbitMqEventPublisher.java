@@ -5,7 +5,6 @@ import nl.bep3.teamtwee.inventory.core.port.messaging.IngredientEventPublisher;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 public class RabbitMqEventPublisher implements IngredientEventPublisher {
-
     private final RabbitTemplate rabbitTemplate;
 
     public RabbitMqEventPublisher(RabbitTemplate rabbitTemplate) {

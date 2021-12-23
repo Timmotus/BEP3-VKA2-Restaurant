@@ -1,5 +1,6 @@
 package nl.bep3.teamtwee.inventory.core.application;
 
+import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.inventory.core.application.query.FindIngredientsByProductName;
 import nl.bep3.teamtwee.inventory.core.application.query.GetIngredientById;
 import nl.bep3.teamtwee.inventory.core.application.query.ListIngredients;
@@ -12,13 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class IngredientsQueryHandler {
-
     private final IngredientRepository repository;
-
-    public IngredientsQueryHandler(IngredientRepository repository) {
-        this.repository = repository;
-    }
 
     public Ingredient handle(GetIngredientById query) {
         return this.repository.findById(query.getId())
@@ -38,5 +35,4 @@ public class IngredientsQueryHandler {
     private Sort createSort(String orderBy, String direction) {
         return Sort.by(Sort.Direction.fromString(direction), orderBy);
     }
-
 }

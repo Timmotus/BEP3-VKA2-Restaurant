@@ -1,5 +1,6 @@
 package nl.bep3.teamtwee.inventory.core.application;
 
+import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.inventory.core.application.command.BuyStockForIngredientWithId;
 import nl.bep3.teamtwee.inventory.core.application.command.DeleteIngredient;
 import nl.bep3.teamtwee.inventory.core.application.command.RegisterIngredient;
@@ -14,15 +15,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class IngredientsCommandHandler {
-
     private final IngredientRepository repository;
     private final IngredientEventPublisher eventPublisher;
-
-    public IngredientsCommandHandler(IngredientRepository repository, IngredientEventPublisher eventPublisher) {
-        this.repository = repository;
-        this.eventPublisher = eventPublisher;
-    }
 
     public Ingredient handle(RegisterIngredient command) {
         Ingredient ingredient = new Ingredient(
@@ -85,5 +81,4 @@ public class IngredientsCommandHandler {
         events.forEach(eventPublisher::publish);
         ingredient.clearEvents();
     }
-
 }

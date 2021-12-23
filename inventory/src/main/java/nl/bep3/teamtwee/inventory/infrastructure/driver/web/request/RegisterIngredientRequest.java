@@ -4,24 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
 public class RegisterIngredientRequest {
-    @NotBlank
-    public String productName;
-
-    @NotBlank
-    public String unit;
-
-    @Positive
-    public int capacity;
-
-    @Positive
-    public int purchaseCapacity;
-
-    @Positive
-    public int sellCapacity;
-
-    @Positive
-    public double purchasePrice;
-
-    @Positive
-    public double sellPrice;
+    @NotBlank public String productName, unit;
+    @Positive public int capacity, purchaseCapacity, sellCapacity;
+    @Positive public double purchasePrice, sellPrice;
 }

@@ -13,7 +13,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 @Configuration
 public class RabbitMqConfig {
-
     @Value("${spring.rabbitmq.host}")
     private String host;
 
@@ -55,5 +54,4 @@ public class RabbitMqConfig {
     public ConnectionFactory connectionFactory() {
         return new CachingConnectionFactory(host, port);
     }
-
 }

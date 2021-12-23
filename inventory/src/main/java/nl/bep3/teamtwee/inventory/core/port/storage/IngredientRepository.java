@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IngredientRepository extends MongoRepository<Ingredient, UUID> {
-
     List<Ingredient> findByProductNameEquals(String productName, Sort sort);
     List<Ingredient> findByProductNameEquals(String productName);
-
 }
