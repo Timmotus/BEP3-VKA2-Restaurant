@@ -6,13 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.*;
+import nl.teamtwee.bep3.restaurant.kitchen.core.application.query.GetOrderById;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
-import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.DeleteOrder;
-import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.ProceedWithOrder;
-import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.UpdateOrder;
-import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.UploadOrder;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.MenuItem;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.Order;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.OrderItem;
@@ -28,6 +26,7 @@ import nl.teamtwee.bep3.restaurant.kitchen.core.port.storage.OrderRepository;
 @AllArgsConstructor
 public class OrdersCommandHandler {
     private final OrderRepository repository;
+    private final OrdersQueryHandler queryHandler;
     private final InventoryRepository inventoryGateway;
     private final MenuRepository menuGateway;
     private final OrderEventPublisher eventPublisher;
@@ -98,6 +97,13 @@ public class OrdersCommandHandler {
         this.repository.save(order);
 
         return order;
+    }
+
+    public void handle(OrderCompleted command) {
+        Order order = queryHandler.handle(new GetOrderById(command.getOrderId()));
+        order.prepare(command.getReceivedAt());
+        publishEventsFor(order);
+        this.repository.save(order);
     }
 
     private void publishEventsFor(Order order) {
