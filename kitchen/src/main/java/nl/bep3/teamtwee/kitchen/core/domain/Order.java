@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Getter
@@ -22,15 +21,16 @@ public class Order {
     private UUID id;
 
     private OrderStatus orderStatus;
-    private Map<UUID, Integer> items;
+    private List<OrderItem> orderItems;
 
     @Transient
     @Setter(value = AccessLevel.NONE)
     private final List<OrderEvent> events = new ArrayList<>();
 
-    public Order() {
+    public Order(List<OrderItem> orderItems) {
         this.id = UUID.randomUUID();
         this.orderStatus = OrderStatus.RECEIVED;
+        this.orderItems = orderItems;
     }
 
     // Methods

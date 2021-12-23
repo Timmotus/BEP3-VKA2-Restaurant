@@ -21,7 +21,7 @@ public class OrdersCommandHandler {
     private final OrderEventPublisher eventPublisher;
 
     public Order handle(UploadOrder command) {
-        Order order = new Order();
+        Order order = new Order(command.getOrderItems());
 
         this.publishEventsFor(order);
         this.repository.save(order);

@@ -10,6 +10,7 @@ import nl.bep3.teamtwee.kitchen.core.application.command.UploadOrder;
 import nl.bep3.teamtwee.kitchen.core.application.query.GetOrderById;
 import nl.bep3.teamtwee.kitchen.core.application.query.ListOrders;
 import nl.bep3.teamtwee.kitchen.core.domain.Order;
+import nl.bep3.teamtwee.kitchen.core.domain.OrderItem;
 import nl.bep3.teamtwee.kitchen.core.domain.OrderStatus;
 import nl.bep3.teamtwee.kitchen.core.domain.exception.OrderNotFoundException;
 import nl.bep3.teamtwee.kitchen.core.domain.exception.OrderStatusException;
@@ -22,8 +23,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -34,13 +35,9 @@ public class KitchenController {
 
     @PostMapping
     public ResponseEntity<Order> uploadOrder(@Valid @RequestBody UploadOrderRequest request) {
-        return ResponseEntity.ok(
-                this.commandHandler.handle(
-                        new UploadOrder(
-
-                        )
-                )
-        );
+        return ResponseEntity.ok(this.commandHandler.handle(new UploadOrder(
+                request.orderItems.stream().map(OrderItem::new).collect(Collectors.toList())
+        )));
     }
 
     @GetMapping("/{id}")
