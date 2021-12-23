@@ -1,11 +1,8 @@
 package nl.teamtwee.bep3.restaurant.payment.infrastructure.driver.web.request;
 
-import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
-public class PostPaymentRequest {
-    @NotBlank
+public class CreatePaymentRequest {
     public UUID orderId;
-    public long cost;
-
+    public Long amount;
 }

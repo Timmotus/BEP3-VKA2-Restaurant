@@ -36,7 +36,7 @@ public class Order {
     private Map<String, OrderItem> items;
 
     @Transient
-    private List<OrderEvent> events;
+    private List<OrderEvent> events = new ArrayList<>();
 
     public List<OrderEvent> listEvents() {
         return this.events;
@@ -77,6 +77,7 @@ public class Order {
 
         public OrderBuilder() {
             this.id = UUID.randomUUID();
+            this.status = "AWAITING_PAYMENT";
             this.items = new HashMap<>();
         }
 

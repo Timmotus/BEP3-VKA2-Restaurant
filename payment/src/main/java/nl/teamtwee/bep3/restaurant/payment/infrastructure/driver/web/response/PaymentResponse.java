@@ -7,9 +7,9 @@ import java.util.UUID;
 
 @Getter
 public class PaymentResponse {
-    private UUID id;
+    private final UUID paymentId;
 
     public PaymentResponse(Payment payment){
-        this.id = payment.getId();
+        this.paymentId = payment.getId();
     }
 }

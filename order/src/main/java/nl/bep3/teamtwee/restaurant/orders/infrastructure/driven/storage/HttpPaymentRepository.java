@@ -20,7 +20,7 @@ public class HttpPaymentRepository implements PaymentRepository {
     private final RestTemplate client;
 
     @Override
-    public UUID createPayment(UUID orderId, Long amount) {
+    public UUID createPayment(UUID orderId, Double amount) {
         URI uri = URI.create(this.rootPath + "/payment");
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);

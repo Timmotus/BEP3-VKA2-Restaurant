@@ -1,61 +1,44 @@
 package nl.teamtwee.bep3.restaurant.payment.core.application;
 
 
-import nl.teamtwee.bep3.restaurant.payment.core.application.command.AddPayment;
-import nl.teamtwee.bep3.restaurant.payment.core.application.command.EditPayment;
-import nl.teamtwee.bep3.restaurant.payment.core.domain.Payment;
-import nl.teamtwee.bep3.restaurant.payment.core.domain.event.PaymentEvent;
-import nl.teamtwee.bep3.restaurant.payment.core.domain.exception.PaymentNotFound;
-import nl.teamtwee.bep3.restaurant.payment.core.ports.messaging.PaymentEventPublisher;
-import nl.teamtwee.bep3.restaurant.payment.core.ports.storage.PaymentRepository;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import nl.teamtwee.bep3.restaurant.payment.core.application.command.CreatePayment;
+import nl.teamtwee.bep3.restaurant.payment.core.application.command.PayPayment;
+import nl.teamtwee.bep3.restaurant.payment.core.application.query.GetPaymentById;
+import nl.teamtwee.bep3.restaurant.payment.core.domain.Payment;
+import nl.teamtwee.bep3.restaurant.payment.core.domain.event.PaymentEvent;
+import nl.teamtwee.bep3.restaurant.payment.core.ports.messaging.PaymentEventPublisher;
+import nl.teamtwee.bep3.restaurant.payment.core.ports.storage.PaymentRepository;
 
+@AllArgsConstructor
 @Service
 public class PaymentCommandHandler {
     private final PaymentRepository repository;
     private final PaymentEventPublisher eventPublisher;
+    private final PaymentQueryHandler queryHandler;
 
-    public PaymentCommandHandler(PaymentRepository repository, PaymentEventPublisher eventPublisher) {
-        this.repository = repository;
-        this.eventPublisher = eventPublisher;
-    }
-
-    public Payment handle(AddPayment command) {
+    public Payment handle(CreatePayment command) {
         Payment payment = new Payment(command.getOrderId(),command.getCost());
-
-       // this.publishEventsAndSave(payment);
-
+        publishEventsAndSave(payment);
         return payment;
     }
 
-    public Payment handle(EditPayment command){
-        Payment payment = this.getPaymentById(command.getId());
-        payment.EditPayment(command.isPayed());
-        if(command.isPayed()){
-            String payed = "payments.order.completed";
-            PaymentEvent paymentEvent = new PaymentEvent(payed, payment.getOrderId(), payment.getId());
-
-            eventPublisher.publishSendAndReceive(paymentEvent);
-        }else{
-            String payed = "payments.order.failed";
-            PaymentEvent paymentEvent = new PaymentEvent(payed, payment.getOrderId(), payment.getId());
-
-            eventPublisher.publishSendAndReceive(paymentEvent);
-        }
-
-
+    public Payment handle(PayPayment command) {
+        Payment payment = this.queryHandler.handle(new GetPaymentById(command.getId()));
+        payment.pay();
+        publishEventsAndSave(payment);
         return payment;
     }
 
-    private Payment getPaymentById(UUID id) {
-        return this.repository.findById(id)
-                .orElseThrow(() -> new PaymentNotFound(id.toString()));
+    private void publishEventsAndSave(Payment payment) {
+        List<PaymentEvent> events = new ArrayList<>(payment.listEvents());
+        payment.clearEvents();
+        this.repository.save(payment);
+        events.forEach(eventPublisher::publishSend);
     }
-
-
-
-
 }

@@ -1,8 +1,7 @@
 package nl.teamtwee.bep3.restaurant.payment.infrastructure.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nl.teamtwee.bep3.restaurant.payment.infrastructure.driven.messaging.RabbitMqEventPublisher;
-import org.springframework.amqp.core.*;
+
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -11,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+
+import nl.teamtwee.bep3.restaurant.payment.infrastructure.driven.messaging.RabbitMqEventPublisher;
 
 
 @Configuration
@@ -24,40 +25,9 @@ public class RabbitMqConfig {
     @Value("${messaging.exchange.restaurant}")
     private String restaurantExchangeName;
 
-    @Value("${messaging.queue.order-payments}")
-    private String orderPaymentsQueueName;
-
-    @Value("${messaging.routing-key.order-payments}")
-    private String orderPaymentsRoutingKey;
-
-    @Value("${messaging.queue.order-deliveries}")
-    private String orderDeliveriesQueueName;
-
-    @Value("${messaging.routing-key.order-deliveries}")
-    private String orderDeliveriesRoutingKey;
-
-    @Bean
-    public TopicExchange restaurantExchange() {
-        return new TopicExchange(restaurantExchangeName);
-    }
-
-    @Bean
-    public Queue orderPaymentsQueue() {
-        return QueueBuilder.durable(orderPaymentsQueueName).build();
-    }
-
-    @Bean
-    public Binding orderPaymentsBinding() {
-        return BindingBuilder
-                .bind(orderPaymentsQueue())
-                .to(restaurantExchange())
-                .with(orderPaymentsRoutingKey);
-    }
-
-
     @Bean
     public RabbitMqEventPublisher EventPublisher(RabbitTemplate template) {
-        return new RabbitMqEventPublisher(template, orderPaymentsQueueName);
+        return new RabbitMqEventPublisher(template, restaurantExchangeName);
     }
 
     @Bean

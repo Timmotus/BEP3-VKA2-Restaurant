@@ -4,21 +4,14 @@ import nl.teamtwee.bep3.restaurant.payment.core.domain.event.PaymentEvent;
 import nl.teamtwee.bep3.restaurant.payment.core.ports.messaging.PaymentEventPublisher;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class RabbitMqEventPublisher implements PaymentEventPublisher {
     private final RabbitTemplate rabbitTemplate;
-    private final String paymentBoardExchange;
+    private final String restaurantExchange;
 
-    public RabbitMqEventPublisher(RabbitTemplate rabbitTemplate, String paymentBoardExchange) {
-        this.rabbitTemplate = rabbitTemplate;
-        this.paymentBoardExchange = paymentBoardExchange;
-    }
-
-    public void publish(PaymentEvent event) {
-        this.rabbitTemplate.convertAndSend(paymentBoardExchange, event.getEventKey(), event);
-    }
-
-    @Override
-    public Object publishSendAndReceive(PaymentEvent event) {
-        return this.rabbitTemplate.convertSendAndReceive(paymentBoardExchange, event.getEventKey(), event);
+    public void publishSend(PaymentEvent event) {
+        this.rabbitTemplate.convertAndSend(restaurantExchange, event.getEventKey(), event);
     }
 }
