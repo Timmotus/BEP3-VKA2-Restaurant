@@ -13,15 +13,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderEvent;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderInitiateDelivery;
 
 @Getter
 @Document
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class Order {
     @Id
-    private final UUID id;
+    private UUID id;
     private UUID paymentId;
     private UUID reservationId;
 
@@ -46,7 +48,15 @@ public class Order {
 
     public void completePayment() {
         this.status = "PAYMENT_COMPLETE";
-        this.events.add(new OrderInitiateDelivery(this.id, "READY_TO_BE_DELIVERED"));
+        this.events.add(new OrderInitiateDelivery(this.id));
+    }
+
+    public void deliveryStarted() {
+        this.status = "DELIVERING";
+    }
+
+    public void deliveryDelivered() {
+        this.status = "DELIVERED";
     }
 
     public static OrderBuilder builder() {

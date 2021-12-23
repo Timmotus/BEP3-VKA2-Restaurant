@@ -1,5 +1,6 @@
 package nl.bep3.teamtwee.restaurant.orders.core.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -9,12 +10,14 @@ import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.CompleteOrderPayment;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.FailedOrderPayment;
+import nl.bep3.teamtwee.restaurant.orders.core.application.command.OrderDeliveryDelivered;
+import nl.bep3.teamtwee.restaurant.orders.core.application.command.OrderDeliveryStarted;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.RegisterOrder;
+import nl.bep3.teamtwee.restaurant.orders.core.application.query.GetOrderById;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.MenuItem;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.Order;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.Order.OrderBuilder;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderEvent;
-import nl.bep3.teamtwee.restaurant.orders.core.domain.exception.OrderNotFoundException;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.messaging.OrderEventPublisher;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.storage.KitchenRepository;
 import nl.bep3.teamtwee.restaurant.orders.core.ports.storage.MenuRepository;
@@ -29,6 +32,7 @@ public class OrdersCommandHandler {
     private final KitchenRepository kitchenGateway;
     private final PaymentRepository paymentGateway;
     private final OrderEventPublisher eventPublisher;
+    private final OrdersQueryHandler queryHandler;
 
     public Order handle(RegisterOrder command) {
         List<String> itemNames = command.getItemCounts()
@@ -57,41 +61,43 @@ public class OrdersCommandHandler {
         Order order = orderBuilder
                 .paymentId(UUID.randomUUID())
                 .reservationId(UUID.randomUUID())
-                .status("PAYMENT_REQUIRED")
                 .build();
 
         order.completePayment();
         // maybe throw event that an order is created
 
-        this.publishEvents(order);
-        this.repository.save(order);
+        this.publishEventsAndSave(order);
         return order;
     }
 
     public void handle(CompleteOrderPayment command) {
-        Order order = findOrderById(command.getOrderId());
+        Order order = queryHandler.handle(new GetOrderById(command.getOrderId()));
         order.completePayment();
-        this.publishEvents(order);
-        this.repository.save(order);
+        this.publishEventsAndSave(order);
     }
 
     public void handle(FailedOrderPayment command) {
-        Order order = findOrderById(command.getOrderId());
+        Order order = queryHandler.handle(new GetOrderById(command.getOrderId()));
         // TODO: process order failure
         this.repository.save(order);
     }
 
-    private Order findOrderById(UUID id) {
-        // should maybe log instead of throw error for our current use cases
-        return this.repository
-                .findById(id)
-                .orElseThrow(() -> new OrderNotFoundException(
-                        String.format("Order with id '{}' not found.", id)));
+    public void handle(OrderDeliveryStarted command) {
+        Order order = queryHandler.handle(new GetOrderById(command.getOrderId()));
+        order.deliveryStarted();
+        this.repository.save(order);
     }
 
-    private void publishEvents(Order order) {
-        List<OrderEvent> events = order.listEvents();
-        events.forEach(eventPublisher::publishSend);
+    public void handle(OrderDeliveryDelivered command) {
+        Order order = queryHandler.handle(new GetOrderById(command.getOrderId()));
+        order.deliveryDelivered();
+        this.repository.save(order);
+    }
+
+    private void publishEventsAndSave(Order order) {
+        List<OrderEvent> events = new ArrayList<>(order.listEvents());
         order.clearEvents();
+        this.repository.save(order);
+        events.forEach(eventPublisher::publishSend);
     }
 }
