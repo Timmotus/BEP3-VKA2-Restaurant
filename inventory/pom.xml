@@ -9,11 +9,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>nl.bep3_teamtwee</groupId>
-    <artifactId>inventory_service</artifactId>
+    <groupId>nl.bep3.teamtwee</groupId>
+    <artifactId>inventory</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>inventory_service</name>
-    <description>inventory_service</description>
+    <name>inventory</name>
+    <description>inventory</description>
 
     <properties>
         <java.version>11</java.version>
@@ -40,11 +40,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.amqp</groupId>

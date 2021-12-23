@@ -2,7 +2,6 @@ package nl.bep3.teamtwee.inventory.infrastructure.driver.web;
 
 import nl.bep3.teamtwee.inventory.core.application.command.*;
 import nl.bep3.teamtwee.inventory.infrastructure.driver.web.request.RegisterIngredientRequest;
-import nl.bep3.teamtwee.inventory.infrastructure.driver.web.request.ReserveIngredientRequest;
 import nl.bep3.teamtwee.inventory.infrastructure.driver.web.request.UpdateIngredientRequest;
 import nl.bep3.teamtwee.inventory.core.application.IngredientsCommandHandler;
 import nl.bep3.teamtwee.inventory.core.application.IngredientsQueryHandler;
@@ -103,12 +102,6 @@ public class InventoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteIngredientById(@PathVariable UUID id) {
         this.commandHandler.handle(new DeleteIngredient(id));
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/reserve")
-    public ResponseEntity<Void> reserveIngredientGroup(@Valid @RequestBody List<ReserveIngredientRequest> ingredientList) {
-        this.commandHandler.handle(new ReserveIngredients(ingredientList));
         return ResponseEntity.noContent().build();
     }
 
