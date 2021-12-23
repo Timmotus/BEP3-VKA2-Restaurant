@@ -10,10 +10,10 @@
     </parent>
 
     <groupId>nl.bep3.teamtwee</groupId>
-    <artifactId>inventory</artifactId>
+    <artifactId>kitchen</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>inventory</name>
-    <description>inventory</description>
+    <name>kitchen</name>
+    <description>kitchen</description>
 
     <properties>
         <java.version>11</java.version>

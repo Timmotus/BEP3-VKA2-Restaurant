@@ -1,0 +1,14 @@
+package nl.bep3.teamtwee.kitchen.core.domain.event;
+
+import lombok.Getter;
+
+import java.time.Instant;
+import java.util.UUID;
+
+@Getter
+public abstract class OrderEvent {
+    private final UUID eventId = UUID.randomUUID();
+    private final Instant eventDate = Instant.now();
+
+    public abstract String getEventKey();
+}
