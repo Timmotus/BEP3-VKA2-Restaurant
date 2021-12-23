@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.kitchen.core.application.query.GetOrderById;
 import nl.bep3.teamtwee.kitchen.core.application.query.ListOrders;
 import nl.bep3.teamtwee.kitchen.core.domain.Order;
-import nl.bep3.teamtwee.kitchen.core.domain.exception.OrderNotFound;
+import nl.bep3.teamtwee.kitchen.core.domain.exception.OrderNotFoundException;
 import nl.bep3.teamtwee.kitchen.core.port.storage.OrderRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class OrdersQueryHandler {
 
     public Order handle(GetOrderById query) {
         return this.repository.findById(query.getId())
-                .orElseThrow(() -> new OrderNotFound(query.getId().toString()));
+                .orElseThrow(() -> new OrderNotFoundException(query.getId().toString()));
     }
 
     public List<Order> handle(ListOrders query) {

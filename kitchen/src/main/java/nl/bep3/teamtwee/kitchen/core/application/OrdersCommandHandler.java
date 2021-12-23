@@ -7,7 +7,7 @@ import nl.bep3.teamtwee.kitchen.core.application.command.UpdateOrder;
 import nl.bep3.teamtwee.kitchen.core.application.command.UploadOrder;
 import nl.bep3.teamtwee.kitchen.core.domain.Order;
 import nl.bep3.teamtwee.kitchen.core.domain.event.OrderEvent;
-import nl.bep3.teamtwee.kitchen.core.domain.exception.OrderNotFound;
+import nl.bep3.teamtwee.kitchen.core.domain.exception.OrderNotFoundException;
 import nl.bep3.teamtwee.kitchen.core.port.messaging.OrderEventPublisher;
 import nl.bep3.teamtwee.kitchen.core.port.storage.OrderRepository;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class OrdersCommandHandler {
 
     public Order handle(UpdateOrder command) {
         Order order = this.repository.findById(command.getId())
-                .orElseThrow(() -> new OrderNotFound(command.getId().toString()));
+                .orElseThrow(() -> new OrderNotFoundException(command.getId().toString()));
 
         this.publishEventsFor(order);
         this.repository.save(order);
@@ -41,7 +41,7 @@ public class OrdersCommandHandler {
 
     public void handle(DeleteOrder command) {
         Order order = this.repository.findById(command.getId())
-                .orElseThrow(() -> new OrderNotFound(command.getId().toString()));
+                .orElseThrow(() -> new OrderNotFoundException(command.getId().toString()));
 
         this.publishEventsFor(order);
         this.repository.delete(order);
@@ -49,13 +49,13 @@ public class OrdersCommandHandler {
 
     public Order handle(ProceedWithOrder command) {
         Order order = this.repository.findById(command.getId())
-                .orElseThrow(() -> new OrderNotFound(command.getId().toString()));
+                .orElseThrow(() -> new OrderNotFoundException(command.getId().toString()));
 
         if (command.getOrderStatus() == null) order.proceed();
         else order.proceedTo(command.getOrderStatus());
 
         this.publishEventsFor(order);
-        this.repository.delete(order);
+        this.repository.save(order);
 
         return order;
     }

@@ -11,7 +11,8 @@ import nl.bep3.teamtwee.kitchen.core.application.query.GetOrderById;
 import nl.bep3.teamtwee.kitchen.core.application.query.ListOrders;
 import nl.bep3.teamtwee.kitchen.core.domain.Order;
 import nl.bep3.teamtwee.kitchen.core.domain.OrderStatus;
-import nl.bep3.teamtwee.kitchen.core.domain.exception.OrderNotFound;
+import nl.bep3.teamtwee.kitchen.core.domain.exception.OrderNotFoundException;
+import nl.bep3.teamtwee.kitchen.core.domain.exception.OrderStatusException;
 import nl.bep3.teamtwee.kitchen.infrastructure.driver.web.request.UpdateOrderRequest;
 import nl.bep3.teamtwee.kitchen.infrastructure.driver.web.request.UploadOrderRequest;
 import org.springframework.dao.DuplicateKeyException;
@@ -81,7 +82,7 @@ public class KitchenController {
                 this.commandHandler.handle(
                         new ProceedWithOrder(
                                 id,
-                                OrderStatus.valueOf(orderStatus)
+                                orderStatus == null ? null : OrderStatus.valueOf(orderStatus)
                         )
                 )
         );
@@ -89,8 +90,13 @@ public class KitchenController {
 
     // Handlers
     @ExceptionHandler
-    public ResponseEntity<String> handleOrderNotFound(OrderNotFound exception) {
+    public ResponseEntity<String> handleOrderNotFoundException(OrderNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleOrderStatusException(OrderStatusException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
     }
 
     @ExceptionHandler

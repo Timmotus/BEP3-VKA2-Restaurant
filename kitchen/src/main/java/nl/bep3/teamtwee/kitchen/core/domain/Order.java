@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import nl.bep3.teamtwee.kitchen.core.domain.event.OrderEvent;
+import nl.bep3.teamtwee.kitchen.core.domain.exception.OrderStatusException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -34,7 +35,8 @@ public class Order {
 
     // Methods
     public void proceed() {
-        this.orderStatus = orderStatus.next();
+        if (this.orderStatus == OrderStatus.COMPLETE) throw new OrderStatusException("This order is finished and therefore cannot proceed!");
+        this.orderStatus = this.orderStatus.next();
     }
 
     public void proceedTo(OrderStatus orderStatus) {

@@ -8,7 +8,7 @@ public class ListOrders {
     private final String direction;
 
     public ListOrders(String orderBy, String direction) {
-        if (orderBy == null) orderBy = "";
+        if (orderBy == null) orderBy = "orderStatus";
         if (direction == null) direction = "asc";
 
         this.orderBy = orderBy;
