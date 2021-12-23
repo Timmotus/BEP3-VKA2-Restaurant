@@ -1,10 +1,12 @@
 package nl.teamtwee.bep3.restaurant.payment.core.application.command;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Getter
+@Setter
 public class EditPayment {
     private final UUID id;
     private final boolean payed;

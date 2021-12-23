@@ -24,7 +24,7 @@ public class PaymentCommandHandler {
     }
 
     public Payment handle(AddPayment command) {
-        Payment payment = new Payment(command.getOrderId());
+        Payment payment = new Payment(command.getOrderId(),command.getCost());
 
         this.publishEventsAndSave(payment);
 

@@ -23,14 +23,17 @@ public class Payment {
     @Indexed
     private UUID orderId;
     @Indexed
+    private double cost;
+    @Indexed
     private boolean payed;
     @Transient
     private List<PaymentEvent> events = new ArrayList<>();
 
 
-    public Payment(UUID orderId){
+    public Payment(UUID orderId, double cost){
         this.id =  UUID.randomUUID();
         this.orderId =  orderId;
+        this.cost = cost;
         this.payed = false;
     }
 

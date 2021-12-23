@@ -33,7 +33,7 @@ public class PaymentController {
         );
     }
 
-    @PostMapping("/{id}/editPayment")
+    @PostMapping("/editPayment/{id}")
     public Payment editPayment(@PathVariable UUID id, @Valid @RequestBody ChangePaymentPayedRequest request) {
         return this.commandHandler.handle(new EditPayment(id, request.payed));
     }

@@ -1,7 +1,13 @@
 package nl.teamtwee.bep3.restaurant.payment.core.application.query;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.UUID;
 
+
+@Getter
+@Setter
 public class GetPaymentByOrderId {
     private final UUID orderId;
 
@@ -9,7 +15,4 @@ public class GetPaymentByOrderId {
         this.orderId = id;
     }
 
-    public UUID getOrderId() {
-        return orderId;
-    }
 }

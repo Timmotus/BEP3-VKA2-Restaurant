@@ -9,11 +9,15 @@ import java.util.UUID;
 @Setter
 public class AddPayment {
     private final UUID orderId;
+    private double cost;
 
-    public AddPayment(UUID orderId) {
+    public AddPayment(UUID orderId, double cost) {
         this.orderId = orderId;
+        this.cost = cost;
     }
 
 
-
+    public UUID getOrderId() {
+        return orderId;
+    }
 }
