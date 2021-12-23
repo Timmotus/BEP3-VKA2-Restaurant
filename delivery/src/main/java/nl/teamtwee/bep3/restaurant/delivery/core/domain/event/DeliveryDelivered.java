@@ -7,11 +7,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class DeliveryCreated extends DeliveryEvent {
-    private UUID orderId;
+public class DeliveryDelivered extends DeliveryEvent {
+    private final UUID deliveryId;
+    private final UUID orderId;
 
     @Override
     public String getEventKey() {
-        return "order.delivery.created";
+        return "delivery.order.delivered";
     }
 }

@@ -24,7 +24,7 @@ public class DeliveryController {
         return ResponseEntity.ok(this.deliveryQueryHandler.handle(new GetAllDeliveries()));
     }
 
-    @GetMapping
+    @GetMapping(params = { "orderId" })
     public ResponseEntity<?> getByOrderId(@RequestParam UUID orderId) {
         return ResponseEntity.ok(this.deliveryQueryHandler.handle(new GetDeliveryByOrderId(orderId)));
     }
