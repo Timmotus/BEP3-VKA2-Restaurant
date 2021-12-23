@@ -7,7 +7,7 @@ public class MenuItemNotFoundException extends RuntimeException {
     private String name;
 
     public MenuItemNotFoundException(String name) {
-        super(String.format("MenuItem '{}' not found", name));
+        super(String.format("MenuItem '%s' not found", name));
         this.name = name;
     }
 }

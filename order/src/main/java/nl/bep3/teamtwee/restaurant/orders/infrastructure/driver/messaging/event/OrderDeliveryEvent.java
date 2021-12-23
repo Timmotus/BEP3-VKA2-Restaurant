@@ -8,10 +8,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class OrderPaymentEvent {
+public class OrderDeliveryEvent {
     private final UUID eventId;
     private final String eventKey;
     private final Instant eventDate;
     private final UUID orderId;
-    private final UUID paymentId;
+    private final UUID deliveryId;
 }

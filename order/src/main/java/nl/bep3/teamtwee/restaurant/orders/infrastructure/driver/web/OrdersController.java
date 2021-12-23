@@ -56,7 +56,7 @@ public class OrdersController {
                 request.street,
                 request.streetNumber,
                 request.itemCounts);
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.commandHandler.handle(order));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new OrderResponse(this.commandHandler.handle(order)));
     }
 
     @ExceptionHandler

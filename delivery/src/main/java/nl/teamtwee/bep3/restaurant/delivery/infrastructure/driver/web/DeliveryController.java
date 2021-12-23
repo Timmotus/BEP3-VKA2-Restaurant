@@ -1,29 +1,31 @@
 package nl.teamtwee.bep3.restaurant.delivery.infrastructure.driver.web;
 
-import nl.teamtwee.bep3.restaurant.delivery.core.application.DeliveryCommandHandler;
+import java.util.UUID;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import lombok.AllArgsConstructor;
 import nl.teamtwee.bep3.restaurant.delivery.core.application.DeliveryQueryHandler;
-import nl.teamtwee.bep3.restaurant.delivery.core.application.query.GetDeliveryByStatus;
-import nl.teamtwee.bep3.restaurant.delivery.core.domain.Delivery;
-import nl.teamtwee.bep3.restaurant.delivery.infrastructure.driver.web.request.DeliveryStatusRequest;
-import org.springframework.web.bind.annotation.*;
+import nl.teamtwee.bep3.restaurant.delivery.core.application.query.GetAllDeliveries;
+import nl.teamtwee.bep3.restaurant.delivery.core.application.query.GetDeliveryByOrderId;
 
-import java.util.List;
-
+@AllArgsConstructor
 @RestController
 @RequestMapping("delivery")
 public class DeliveryController {
-
-    private final DeliveryCommandHandler deliveryCommandHandler;
     private final DeliveryQueryHandler deliveryQueryHandler;
 
-    public DeliveryController(DeliveryCommandHandler deliveryCommandHandler, DeliveryQueryHandler deliveryQueryHandler) {
-        this.deliveryCommandHandler = deliveryCommandHandler;
-        this.deliveryQueryHandler = deliveryQueryHandler;
+    @GetMapping
+    public ResponseEntity<?> getAllDeliveries() {
+        return ResponseEntity.ok(this.deliveryQueryHandler.handle(new GetAllDeliveries()));
     }
 
-    @GetMapping("/status")
-    public List<Delivery> getAllDeliveries(@RequestBody DeliveryStatusRequest deliveryRequest) {
-        return this.deliveryQueryHandler.handle(new GetDeliveryByStatus(deliveryRequest.deliveryStatusEnum));
+    @GetMapping(params = { "orderId" })
+    public ResponseEntity<?> getByOrderId(@RequestParam UUID orderId) {
+        return ResponseEntity.ok(this.deliveryQueryHandler.handle(new GetDeliveryByOrderId(orderId)));
     }
-
 }

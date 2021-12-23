@@ -1,13 +1,16 @@
 package nl.teamtwee.bep3.restaurant.delivery.core.port.storage;
 
-import nl.teamtwee.bep3.restaurant.delivery.core.domain.Delivery;
-import nl.teamtwee.bep3.restaurant.delivery.core.domain.DeliveryStatusEnum;
-import org.springframework.data.mongodb.repository.MongoRepository;
-
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-public interface DeliveryRepository extends MongoRepository<Delivery, UUID>{
-    List<Delivery> findDeliveryByDeliveryStatusEnum(Enum<DeliveryStatusEnum> deliveryStatusEnum);
+import org.springframework.data.mongodb.repository.MongoRepository;
 
+import nl.teamtwee.bep3.restaurant.delivery.core.domain.Delivery;
+import nl.teamtwee.bep3.restaurant.delivery.core.domain.DeliveryStatus;
+
+public interface DeliveryRepository extends MongoRepository<Delivery, UUID> {
+    Optional<Delivery> findOneByOrderId(UUID orderId);
+
+    List<Delivery> findByStatus(DeliveryStatus status);
 }

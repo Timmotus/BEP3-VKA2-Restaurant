@@ -1,32 +1,40 @@
 package nl.teamtwee.bep3.restaurant.delivery.core.domain;
 
-import nl.teamtwee.bep3.restaurant.delivery.core.domain.event.DeliveryEvent;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import lombok.Getter;
+import lombok.Setter;
+import nl.teamtwee.bep3.restaurant.delivery.core.domain.event.DeliveryStarted;
+import nl.teamtwee.bep3.restaurant.delivery.core.domain.event.DeliveryDelivered;
+import nl.teamtwee.bep3.restaurant.delivery.core.domain.event.DeliveryEvent;
+
 @Getter
-@Setter
 @Document
 public class Delivery {
     @Id
     private UUID id;
     private UUID orderId;
-    private DeliveryStatusEnum deliveryStatusEnum;
+    private DeliveryStatus status;
+    private LocalDateTime startedAt;
+    @Setter
+    private LocalDateTime deliveredAt;
 
     @Transient
     private List<DeliveryEvent> events = new ArrayList<>();
 
-    public Delivery(UUID orderId, DeliveryStatusEnum deliveryStatusEnum) {
+    public Delivery(UUID orderId) {
         this.id = UUID.randomUUID();
         this.orderId = orderId;
-        this.deliveryStatusEnum = deliveryStatusEnum;
+        this.startedAt = LocalDateTime.now();
+        this.status = DeliveryStatus.DELIVERING;
+        this.events.add(new DeliveryStarted(this.id, orderId));
     }
 
     public List<DeliveryEvent> listEvents() {
@@ -35,5 +43,11 @@ public class Delivery {
 
     public void clearEvents() {
         this.events.clear();
+    }
+
+    public void deliver(LocalDateTime deliveredAt) {
+        this.status = DeliveryStatus.DELIVERED;
+        this.deliveredAt = deliveredAt;
+        this.events.add(new DeliveryDelivered(this.id, orderId));
     }
 }
