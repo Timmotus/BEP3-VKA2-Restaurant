@@ -58,9 +58,4 @@ public class PaymentController {
     public ResponseEntity<?> payPayment(@PathVariable UUID id) {
         return ResponseEntity.ok(this.commandHandler.handle(new PayPayment(id)));
     }
-
-    // @GetMapping("/orderIdPayment/{id}")
-    // public Payment findPaymentByOrderId(@PathVariable UUID id) {
-    // return this.queryHandler.handle(new GetPaymentByOrderId(id));
-    // }
 }
