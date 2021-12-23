@@ -36,7 +36,10 @@ public class OrdersCommandHandler {
         // get ingredients for each item from menu
         List<MenuItem> menuItems = this.menuGateway.getMenuItemsByNames(new ArrayList<>(command.getItems().keySet()));
         List<OrderItem> orderItems = menuItems.stream()
-                .map(item -> new OrderItem(item.getName(), item.getIngredients()))
+                .map(item -> new OrderItem(
+                        item.getName(),
+                        command.getItems().get(item.getName()),
+                        item.getIngredients()))
                 .collect(Collectors.toList());
         Order order = new Order(orderItems);
 

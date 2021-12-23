@@ -12,5 +12,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class OrderItem {
     private String name;
+    private Long count;
     private Map<String, Long> ingredients;
 }
