@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>nl.bep3.teamtwee</groupId>
+    <groupId>nl.teamtwee.bep3.restaurant</groupId>
     <artifactId>inventory</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>inventory</name>
