@@ -6,7 +6,6 @@ import nl.teamtwee.bep3.restaurant.payment.core.application.PaymentQueryHandler;
 import nl.teamtwee.bep3.restaurant.payment.core.application.command.AddPayment;
 import nl.teamtwee.bep3.restaurant.payment.core.application.command.EditPayment;
 import nl.teamtwee.bep3.restaurant.payment.core.application.query.GetPaymentById;
-import nl.teamtwee.bep3.restaurant.payment.core.application.query.GetPaymentByOrderId;
 import nl.teamtwee.bep3.restaurant.payment.core.domain.Payment;
 import nl.teamtwee.bep3.restaurant.payment.infrastructure.driver.web.request.ChangePaymentPayedRequest;
 import nl.teamtwee.bep3.restaurant.payment.infrastructure.driver.web.request.PostPaymentRequest;
@@ -19,7 +18,7 @@ import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/Payment")
+@RequestMapping("/payment")
 public class PaymentController {
     private final PaymentCommandHandler commandHandler;
     private final PaymentQueryHandler queryHandler;
@@ -45,13 +44,13 @@ public class PaymentController {
     }
 
 
-    @GetMapping("/payment/{id}")
+    @GetMapping("{id}")
     public Payment findPaymentById(@PathVariable UUID id) {
         return this.queryHandler.handle(new GetPaymentById(id));
     }
 
-    @GetMapping("/orderIdPayment/{id}")
+    /*@GetMapping("/orderIdPayment/{id}")
     public Payment findPaymentByOrderId(@PathVariable UUID id) {
         return this.queryHandler.handle(new GetPaymentByOrderId(id));
-    }
+    }*/
 }

@@ -12,12 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-/*
-    Values are configured in application.properties
-
-    Docs: https://docs.spring.io/spring-amqp/docs/current/reference/html/#reference
-    Concepts: https://www.rabbitmq.com/tutorials/amqp-concepts.html
- */
 
 @Configuration
 public class RabbitMqConfig {
@@ -36,27 +30,34 @@ public class RabbitMqConfig {
     @Value("${messaging.routing-key.order-payments}")
     private String orderPaymentsRoutingKey;
 
+    @Value("${messaging.queue.order-deliveries}")
+    private String orderDeliveriesQueueName;
+
+    @Value("${messaging.routing-key.order-deliveries}")
+    private String orderDeliveriesRoutingKey;
+
     @Bean
-    public TopicExchange jobBoardExchange() {
+    public TopicExchange restaurantExchange() {
         return new TopicExchange(restaurantExchangeName);
     }
 
     @Bean
-    public Queue orderQueue() {
+    public Queue orderPaymentsQueue() {
         return QueueBuilder.durable(orderPaymentsQueueName).build();
     }
 
     @Bean
     public Binding orderPaymentsBinding() {
         return BindingBuilder
-                .bind(orderQueue())
-                .to(jobBoardExchange())
+                .bind(orderPaymentsQueue())
+                .to(restaurantExchange())
                 .with(orderPaymentsRoutingKey);
     }
 
+
     @Bean
     public RabbitMqEventPublisher EventPublisher(RabbitTemplate template) {
-        return new RabbitMqEventPublisher(template, restaurantExchangeName);
+        return new RabbitMqEventPublisher(template, orderPaymentsQueueName);
     }
 
     @Bean

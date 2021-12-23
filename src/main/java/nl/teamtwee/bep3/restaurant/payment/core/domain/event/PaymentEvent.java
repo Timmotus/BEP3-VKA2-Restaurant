@@ -9,17 +9,18 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public abstract class PaymentEvent {
+public class PaymentEvent {
     private final UUID eventId = UUID.randomUUID();
     private final Instant eventDate = Instant.now();
+    private String eventKey;
+    private UUID orderId;
+    private UUID paymentId;
 
-    public UUID getEventId() {
-        return eventId;
+    public PaymentEvent(String eventKey, UUID orderId, UUID paymentId) {
+        this.eventKey = eventKey;
+        this.orderId = orderId;
+        this.paymentId = paymentId;
     }
 
-    public Instant getEventDate() {
-        return eventDate;
-    }
 
-    public abstract String getEventKey();
 }

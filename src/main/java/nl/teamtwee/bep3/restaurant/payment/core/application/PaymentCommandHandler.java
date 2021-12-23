@@ -26,7 +26,7 @@ public class PaymentCommandHandler {
     public Payment handle(AddPayment command) {
         Payment payment = new Payment(command.getOrderId(),command.getCost());
 
-        this.publishEventsAndSave(payment);
+       // this.publishEventsAndSave(payment);
 
         return payment;
     }
@@ -34,8 +34,18 @@ public class PaymentCommandHandler {
     public Payment handle(EditPayment command){
         Payment payment = this.getPaymentById(command.getId());
         payment.EditPayment(command.isPayed());
+        if(command.isPayed()){
+            String payed = "payments.order.completed";
+            PaymentEvent paymentEvent = new PaymentEvent(payed, payment.getOrderId(), payment.getId());
 
-        this.publishEventsAndSave(payment);
+            eventPublisher.publishSendAndReceive(paymentEvent);
+        }else{
+            String payed = "payments.order.failed";
+            PaymentEvent paymentEvent = new PaymentEvent(payed, payment.getOrderId(), payment.getId());
+
+            eventPublisher.publishSendAndReceive(paymentEvent);
+        }
+
 
         return payment;
     }
@@ -46,15 +56,6 @@ public class PaymentCommandHandler {
     }
 
 
-
-
-    private void publishEventsAndSave(Payment payment) {
-        List<PaymentEvent> events = payment.listEvents();
-        events.forEach(eventPublisher::publish);
-        payment.clearEvents();
-
-        this.repository.save(payment);
-    }
 
 
 }
