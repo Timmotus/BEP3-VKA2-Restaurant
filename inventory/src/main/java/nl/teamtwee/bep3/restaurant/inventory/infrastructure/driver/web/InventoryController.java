@@ -34,7 +34,7 @@ public class InventoryController {
     private final IngredientsQueryHandler queryHandler;
 
     @PostMapping("/stock/take")
-    public ResponseEntity<List<Ingredient>> takeFromStock(@RequestBody Map<UUID, Integer> ingredientAmountMap) {
+    public ResponseEntity<List<Ingredient>> takeFromStock(@RequestBody Map<String, Integer> ingredientAmountMap) {
         return ResponseEntity.ok(this.commandHandler.handle(new TakeFromStock(ingredientAmountMap)));
     }
 

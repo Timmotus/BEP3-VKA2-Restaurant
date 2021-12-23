@@ -23,7 +23,7 @@ public class Ingredient {
     @Id
     private UUID id;
 
-    @Indexed
+    @Indexed(unique = true)
     private String productName;
 
     private Unit unit;

@@ -1,18 +1,21 @@
 package nl.teamtwee.bep3.restaurant.inventory.core.application;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import lombok.AllArgsConstructor;
-import nl.teamtwee.bep3.restaurant.inventory.core.application.command.*;
+import nl.teamtwee.bep3.restaurant.inventory.core.application.command.BuyStockForIngredientWithId;
+import nl.teamtwee.bep3.restaurant.inventory.core.application.command.DeleteIngredient;
+import nl.teamtwee.bep3.restaurant.inventory.core.application.command.RegisterIngredient;
+import nl.teamtwee.bep3.restaurant.inventory.core.application.command.TakeFromStock;
+import nl.teamtwee.bep3.restaurant.inventory.core.application.command.UpdateIngredient;
 import nl.teamtwee.bep3.restaurant.inventory.core.domain.Ingredient;
 import nl.teamtwee.bep3.restaurant.inventory.core.domain.event.IngredientEvent;
 import nl.teamtwee.bep3.restaurant.inventory.core.domain.exception.IngredientNotFound;
 import nl.teamtwee.bep3.restaurant.inventory.core.port.messaging.IngredientEventPublisher;
 import nl.teamtwee.bep3.restaurant.inventory.core.port.storage.IngredientRepository;
-
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -80,13 +83,13 @@ public class IngredientsCommandHandler {
     public List<Ingredient> handle(TakeFromStock command) {
         List<Ingredient> ingredients = new ArrayList<>();
 
-        for (UUID uuid : command.getIngredientAmountMap().keySet())
-            ingredients.add(this.repository.findById(uuid)
-                    .orElseThrow(() -> new IngredientNotFound(uuid.toString())));
+        for (String name : command.getIngredientAmountMap().keySet())
+            ingredients.add(this.repository.findByProductName(name)
+                    .orElseThrow(() -> new IngredientNotFound(name)));
 
         for (Ingredient ingredient : ingredients) {
-            for (UUID uuid : command.getIngredientAmountMap().keySet())
-                ingredient.takeStock(command.getIngredientAmountMap().get(uuid));
+            for (String name : command.getIngredientAmountMap().keySet())
+                ingredient.takeStock(command.getIngredientAmountMap().get(name));
         }
 
         for (Ingredient ingredient : ingredients) {

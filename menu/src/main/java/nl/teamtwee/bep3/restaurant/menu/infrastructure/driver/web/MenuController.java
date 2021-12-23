@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +21,7 @@ import nl.teamtwee.bep3.restaurant.menu.core.application.MenuCommandHandler;
 import nl.teamtwee.bep3.restaurant.menu.core.application.MenuQueryHandler;
 import nl.teamtwee.bep3.restaurant.menu.core.application.command.RegisterMenuItem;
 import nl.teamtwee.bep3.restaurant.menu.core.application.query.GetAllMenuItems;
-import nl.teamtwee.bep3.restaurant.menu.core.application.query.GetMenuItemByName;
+import nl.teamtwee.bep3.restaurant.menu.core.application.query.GetMenuItemsByNames;
 import nl.teamtwee.bep3.restaurant.menu.core.application.query.GetPricesByNames;
 import nl.teamtwee.bep3.restaurant.menu.core.domain.exception.MenuItemNotFoundException;
 import nl.teamtwee.bep3.restaurant.menu.infrastructure.driver.web.request.RegisterMenuItemRequest;
@@ -45,14 +44,17 @@ public class MenuController {
                         .collect(Collectors.toList()));
     }
 
-    @GetMapping("/items/{name}")
-    public ResponseEntity<?> getMenuItemByName(@PathVariable String name) {
-        return ResponseEntity.ok(new MenuItemResponse(this.menuQueryHandler.handle(new GetMenuItemByName(name))));
+    @GetMapping("/items")
+    public ResponseEntity<?> getMenuItemsByNames(@RequestParam List<String> names) {
+        return ResponseEntity.ok(this.menuQueryHandler.handle(
+                new GetMenuItemsByNames(names)).stream()
+                .map(item -> new MenuItemResponse(item))
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/prices")
     public ResponseEntity<?> getPricesByNames(@RequestParam List<String> names) {
-        return ResponseEntity.ok(this.menuCommandHandler.handle(new GetPricesByNames(names)));
+        return ResponseEntity.ok(this.menuQueryHandler.handle(new GetPricesByNames(names)));
     }
 
     @PostMapping("/items")

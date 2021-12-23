@@ -1,10 +1,19 @@
 package nl.teamtwee.bep3.restaurant.kitchen.core.application;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import lombok.AllArgsConstructor;
 import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.DeleteOrder;
 import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.ProceedWithOrder;
 import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.UpdateOrder;
 import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.UploadOrder;
+import nl.teamtwee.bep3.restaurant.kitchen.core.domain.MenuItem;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.Order;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.OrderItem;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.OrderStatus;
@@ -12,28 +21,27 @@ import nl.teamtwee.bep3.restaurant.kitchen.core.domain.event.OrderEvent;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.exception.OrderNotFoundException;
 import nl.teamtwee.bep3.restaurant.kitchen.core.port.messaging.OrderEventPublisher;
 import nl.teamtwee.bep3.restaurant.kitchen.core.port.storage.InventoryRepository;
+import nl.teamtwee.bep3.restaurant.kitchen.core.port.storage.MenuRepository;
 import nl.teamtwee.bep3.restaurant.kitchen.core.port.storage.OrderRepository;
-
-import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class OrdersCommandHandler {
     private final OrderRepository repository;
     private final InventoryRepository inventoryGateway;
+    private final MenuRepository menuGateway;
     private final OrderEventPublisher eventPublisher;
 
     public Order handle(UploadOrder command) {
-        Order order = new Order(command.getOrderItems());
+        // get ingredients for each item from menu
+        List<MenuItem> menuItems = this.menuGateway.getMenuItemsByNames(new ArrayList<>(command.getItems().keySet()));
+        List<OrderItem> orderItems = menuItems.stream()
+                .map(item -> new OrderItem(item.getName(), item.getIngredients()))
+                .collect(Collectors.toList());
+        Order order = new Order(orderItems);
 
         this.publishEventsFor(order);
         this.repository.save(order);
-
         return order;
     }
 
@@ -59,22 +67,24 @@ public class OrdersCommandHandler {
         Order order = this.repository.findById(command.getId())
                 .orElseThrow(() -> new OrderNotFoundException(command.getId().toString()));
 
-        if (command.getOrderStatus() == null) order.proceed();
-        else order.proceedTo(command.getOrderStatus());
+        if (command.getOrderStatus() == null)
+            order.proceed();
+        else
+            order.proceedTo(command.getOrderStatus());
 
         // Update Stock if OrderStatus is on complete
         if (order.getOrderStatus() == OrderStatus.COMPLETE) {
-            Map<UUID, Integer> ingredientAmountMap = new HashMap<>();
+            Map<String, Long> ingredientAmountMap = new HashMap<>();
 
             for (OrderItem item : order.getOrderItems()) {
-                for (UUID uuid : item.getIngredients().keySet()) {
-                    int n = item.getIngredients().get(uuid);
+                for (String name : item.getIngredients().keySet()) {
+                    Long n = item.getIngredients().get(name);
 
-                    if (ingredientAmountMap.containsKey(uuid)) {
-                        int o = ingredientAmountMap.get(uuid);
-                        ingredientAmountMap.replace(uuid, o + n);
-                    }
-                    else ingredientAmountMap.put(uuid, n);
+                    if (ingredientAmountMap.containsKey(name)) {
+                        Long o = ingredientAmountMap.get(name);
+                        ingredientAmountMap.replace(name, o + n);
+                    } else
+                        ingredientAmountMap.put(name, n);
                 }
             }
 

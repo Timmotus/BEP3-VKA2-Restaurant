@@ -1,15 +1,16 @@
 package nl.teamtwee.bep3.restaurant.kitchen.core.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import java.util.Map;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Map;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Getter
 @Document
 @AllArgsConstructor
 public class OrderItem {
-    private Map<UUID, Integer> ingredients;
+    private String name;
+    private Map<String, Long> ingredients;
 }
