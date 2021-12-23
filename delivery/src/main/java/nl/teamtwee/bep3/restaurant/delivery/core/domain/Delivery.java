@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Getter;
+import nl.teamtwee.bep3.restaurant.delivery.core.domain.event.DeliveryCreated;
 import nl.teamtwee.bep3.restaurant.delivery.core.domain.event.DeliveryEvent;
 
 @Getter
@@ -26,7 +27,7 @@ public class Delivery {
         this.id = UUID.randomUUID();
         this.orderId = orderId;
         this.status = DeliveryStatus.DELIVERING;
-        // maybe throw event delivery was created
+        this.events.add(new DeliveryCreated(orderId));
     }
 
     public List<DeliveryEvent> listEvents() {
