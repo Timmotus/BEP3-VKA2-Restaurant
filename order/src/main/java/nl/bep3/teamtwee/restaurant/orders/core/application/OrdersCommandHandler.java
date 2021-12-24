@@ -56,7 +56,8 @@ public class OrdersCommandHandler {
         // Request a payment
         UUID paymentId = this.paymentGateway.createPayment(
                 orderBuilder.getId(),
-                menuItemsWithPrices.stream().mapToDouble(item -> item.getPrice()).sum());
+                menuItemsWithPrices.stream()
+                        .mapToDouble(item -> item.getPrice() * command.getItemCounts().get(item.getName())).sum());
 
         Order order = orderBuilder
                 .paymentId(paymentId)
