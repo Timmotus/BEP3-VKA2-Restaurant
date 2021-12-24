@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderEvent;
-import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderInitiateDelivery;
+import nl.bep3.teamtwee.restaurant.orders.core.domain.event.OrderInitiatePrepare;
 
 @Getter
 @Document
@@ -48,7 +48,11 @@ public class Order {
 
     public void completePayment() {
         this.status = "PAYMENT_COMPLETE";
-        this.events.add(new OrderInitiateDelivery(this.id));
+        this.events.add(new OrderInitiatePrepare(this.id, this.reservationId));
+    }
+
+    public void preparationStarted() {
+        this.status = "PREPARING_ORDER";
     }
 
     public void deliveryStarted() {

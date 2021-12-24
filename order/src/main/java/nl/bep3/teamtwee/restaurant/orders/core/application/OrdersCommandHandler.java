@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.CompleteOrderPayment;
-import nl.bep3.teamtwee.restaurant.orders.core.application.command.FailedOrderPayment;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.OrderDeliveryDelivered;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.OrderDeliveryStarted;
+import nl.bep3.teamtwee.restaurant.orders.core.application.command.OrderPreparingReservation;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.RegisterOrder;
 import nl.bep3.teamtwee.restaurant.orders.core.application.query.GetOrderById;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.MenuItem;
@@ -56,7 +56,8 @@ public class OrdersCommandHandler {
         // Request a payment
         UUID paymentId = this.paymentGateway.createPayment(
                 orderBuilder.getId(),
-                menuItemsWithPrices.stream().mapToDouble(item -> item.getPrice()).sum());
+                menuItemsWithPrices.stream()
+                        .mapToDouble(item -> item.getPrice() * command.getItemCounts().get(item.getName())).sum());
 
         Order order = orderBuilder
                 .paymentId(paymentId)
@@ -74,9 +75,9 @@ public class OrdersCommandHandler {
         this.publishEventsAndSave(order);
     }
 
-    public void handle(FailedOrderPayment command) {
+    public void handle(OrderPreparingReservation command) {
         Order order = queryHandler.handle(new GetOrderById(command.getOrderId()));
-        // TODO: process order failure
+        order.preparationStarted();
         this.repository.save(order);
     }
 
