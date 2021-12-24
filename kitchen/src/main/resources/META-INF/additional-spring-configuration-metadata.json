@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "http-client.root-path.inventory",
+      "type": "java.lang.String",
+      "description": "Description for http-client.root-path.inventory."
+  }
+] }
