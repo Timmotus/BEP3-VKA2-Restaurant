@@ -34,7 +34,6 @@ public class Delivery {
         this.orderId = orderId;
         this.startedAt = LocalDateTime.now();
         this.status = DeliveryStatus.DELIVERING;
-        this.events.add(new DeliveryStarted(this.id, orderId));
     }
 
     public List<DeliveryEvent> listEvents() {
@@ -43,6 +42,10 @@ public class Delivery {
 
     public void clearEvents() {
         this.events.clear();
+    }
+
+    public void startDelivery(UUID orderId) {
+        this.events.add(new DeliveryStarted(this.id, orderId));
     }
 
     public void deliver(LocalDateTime deliveredAt) {

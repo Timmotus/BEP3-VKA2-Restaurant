@@ -14,19 +14,18 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class KitchenTask {
-
     private final OrderRepository repository;
     private final OrdersCommandHandler commandHandler;
     private final long pollingRate = 10000;
-    private final long deliverySpeedSeconds = 30;
+    private final long preparationSpeedSeconds = 30;
 
     @Scheduled(fixedDelay = pollingRate)
     public void prepareOrder() {
-        List<Order> orders = this.repository.findByStatus(OrderStatus.RECEIVED);
+        List<Order> orders = this.repository.findByOrderStatus(OrderStatus.PREPARATION);
         orders.forEach(order -> {
-            LocalDateTime receivedAt = order.getReceivedAt();
-            LocalDateTime deliveryThreshold = receivedAt.plusSeconds(deliverySpeedSeconds);
-            if (LocalDateTime.now().isAfter(deliveryThreshold)) {
+            LocalDateTime startedAt = order.getStartedAt();
+            LocalDateTime finishThreshold = startedAt.plusSeconds(preparationSpeedSeconds);
+            if (LocalDateTime.now().isAfter(finishThreshold)) {
                 this.commandHandler.handle(new OrderCompleted(order.getId(), LocalDateTime.now()));
             }
         });

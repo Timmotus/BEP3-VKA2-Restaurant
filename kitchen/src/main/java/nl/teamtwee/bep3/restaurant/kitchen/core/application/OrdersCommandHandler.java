@@ -6,15 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.*;
-import nl.teamtwee.bep3.restaurant.kitchen.core.application.query.GetOrderById;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
+import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.DeleteOrder;
+import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.OrderCompleted;
+import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.PrepareOrder;
+import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.UpdateOrder;
+import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.UploadOrder;
+import nl.teamtwee.bep3.restaurant.kitchen.core.application.query.GetOrderById;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.MenuItem;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.Order;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.OrderItem;
-import nl.teamtwee.bep3.restaurant.kitchen.core.domain.OrderStatus;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.event.OrderEvent;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.exception.OrderNotFoundException;
 import nl.teamtwee.bep3.restaurant.kitchen.core.port.messaging.OrderEventPublisher;
@@ -40,10 +43,9 @@ public class OrdersCommandHandler {
                         command.getItems().get(item.getName()),
                         item.getIngredients()))
                 .collect(Collectors.toList());
-        Order order = new Order(orderItems);
+        Order order = new Order(command.getOrderId(), orderItems);
 
-        this.publishEventsFor(order);
-        this.repository.save(order);
+        this.publishEventsAndSaveFor(order);
         return order;
     }
 
@@ -51,7 +53,7 @@ public class OrdersCommandHandler {
         Order order = this.repository.findById(command.getId())
                 .orElseThrow(() -> new OrderNotFoundException(command.getId().toString()));
 
-        this.publishEventsFor(order);
+        this.publishEventsAndSaveFor(order);
         this.repository.save(order);
 
         return order;
@@ -60,55 +62,43 @@ public class OrdersCommandHandler {
     public void handle(DeleteOrder command) {
         Order order = this.repository.findById(command.getId())
                 .orElseThrow(() -> new OrderNotFoundException(command.getId().toString()));
-
-        this.publishEventsFor(order);
         this.repository.delete(order);
     }
 
-    public Order handle(ProceedWithOrder command) {
-        Order order = this.repository.findById(command.getId())
-                .orElseThrow(() -> new OrderNotFoundException(command.getId().toString()));
-
-        if (command.getOrderStatus() == null)
-            order.proceed();
-        else
-            order.proceedTo(command.getOrderStatus());
-
-        // Update Stock if OrderStatus is on complete
-        if (order.getOrderStatus() == OrderStatus.COMPLETE) {
-            Map<String, Long> ingredientAmountMap = new HashMap<>();
-
-            for (OrderItem item : order.getOrderItems()) {
-                for (String name : item.getIngredients().keySet()) {
-                    Long n = item.getIngredients().get(name);
-
-                    if (ingredientAmountMap.containsKey(name)) {
-                        Long o = ingredientAmountMap.get(name);
-                        ingredientAmountMap.replace(name, o + n);
-                    } else
-                        ingredientAmountMap.put(name, n);
-                }
-            }
-
-            inventoryGateway.removeStock(ingredientAmountMap);
-        }
-
-        this.publishEventsFor(order);
-        this.repository.save(order);
-
+    public Order handle(PrepareOrder command) {
+        Order order = this.queryHandler.handle(new GetOrderById(command.getReservationId()));
+        order.prepare();
+        this.publishEventsAndSaveFor(order);
         return order;
     }
 
-    public void handle(OrderCompleted command) {
+    public Order handle(OrderCompleted command) {
         Order order = queryHandler.handle(new GetOrderById(command.getOrderId()));
-        order.prepare(command.getReceivedAt());
-        publishEventsFor(order);
-        this.repository.save(order);
+        order.complete(command.getReceivedAt());
+
+        Map<String, Long> ingredientAmountMap = new HashMap<>();
+
+        for (OrderItem item : order.getOrderItems()) {
+            for (String name : item.getIngredients().keySet()) {
+                Long n = item.getIngredients().get(name);
+
+                if (ingredientAmountMap.containsKey(name)) {
+                    Long o = ingredientAmountMap.get(name);
+                    ingredientAmountMap.replace(name, o + n);
+                } else
+                    ingredientAmountMap.put(name, n);
+            }
+        }
+
+        inventoryGateway.removeStock(ingredientAmountMap);
+        publishEventsAndSaveFor(order);
+        return order;
     }
 
-    private void publishEventsFor(Order order) {
-        List<OrderEvent> events = order.listEvents();
+    private void publishEventsAndSaveFor(Order order) {
+        List<OrderEvent> events = new ArrayList<>(order.listEvents());
         events.forEach(eventPublisher::publish);
         order.clearEvents();
+        this.repository.save(order);
     }
 }

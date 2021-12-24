@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.CompleteOrderPayment;
-import nl.bep3.teamtwee.restaurant.orders.core.application.command.FailedOrderPayment;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.OrderDeliveryDelivered;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.OrderDeliveryStarted;
+import nl.bep3.teamtwee.restaurant.orders.core.application.command.OrderPreparingReservation;
 import nl.bep3.teamtwee.restaurant.orders.core.application.command.RegisterOrder;
 import nl.bep3.teamtwee.restaurant.orders.core.application.query.GetOrderById;
 import nl.bep3.teamtwee.restaurant.orders.core.domain.MenuItem;
@@ -74,9 +74,9 @@ public class OrdersCommandHandler {
         this.publishEventsAndSave(order);
     }
 
-    public void handle(FailedOrderPayment command) {
+    public void handle(OrderPreparingReservation command) {
         Order order = queryHandler.handle(new GetOrderById(command.getOrderId()));
-        // TODO: process order failure
+        order.preparationStarted();
         this.repository.save(order);
     }
 

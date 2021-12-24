@@ -1,4 +1,4 @@
-package nl.teamtwee.bep3.restaurant.delivery.core.domain.event;
+package nl.teamtwee.bep3.restaurant.kitchen.core.domain.event;
 
 import java.util.UUID;
 
@@ -7,12 +7,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class DeliveryStarted extends DeliveryEvent {
-    private final UUID deliveryId;
+public class OrderPreparationStarted extends OrderEvent {
+    private final UUID reservationId;
     private final UUID orderId;
 
     @Override
     public String getEventKey() {
-        return "order.delivery.started";
+        return "kitchen.order.started";
     }
 }

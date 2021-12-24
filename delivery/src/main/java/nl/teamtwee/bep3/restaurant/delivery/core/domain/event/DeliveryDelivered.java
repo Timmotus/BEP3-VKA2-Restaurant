@@ -13,6 +13,6 @@ public class DeliveryDelivered extends DeliveryEvent {
 
     @Override
     public String getEventKey() {
-        return "delivery.order.delivered";
+        return "order.delivery.delivered";
     }
 }

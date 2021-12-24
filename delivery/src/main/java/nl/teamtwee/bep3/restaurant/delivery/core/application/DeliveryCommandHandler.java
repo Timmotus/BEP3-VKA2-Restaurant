@@ -22,6 +22,7 @@ public class DeliveryCommandHandler {
 
     public void handle(CreateDelivery command) {
         Delivery delivery = new Delivery(command.getOrderId());
+        delivery.startDelivery(command.getOrderId());
         publishEventsFor(delivery);
         this.repository.save(delivery);
     }

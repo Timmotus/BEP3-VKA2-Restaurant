@@ -9,5 +9,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface OrderRepository extends MongoRepository<Order, UUID> {
-    List<Order> findByStatus(OrderStatus status);
+    List<Order> findByOrderStatus(OrderStatus status);
 }

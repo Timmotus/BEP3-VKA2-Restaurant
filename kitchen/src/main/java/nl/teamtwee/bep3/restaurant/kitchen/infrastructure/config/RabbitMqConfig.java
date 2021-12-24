@@ -2,6 +2,11 @@ package nl.teamtwee.bep3.restaurant.kitchen.infrastructure.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -21,9 +26,36 @@ public class RabbitMqConfig {
     @Value("${spring.rabbitmq.port}")
     private int port;
 
+    @Value("${messaging.exchange.restaurant}")
+    private String restaurantExchangeName;
+
+    @Value("${messaging.queue.kitchen-orders}")
+    private String kitchenOrdersQueueName;
+
+    @Value("${messaging.routing-key.kitchen-orders}")
+    private String kitchenOrdersRoutingKey;
+
+    @Bean
+    public TopicExchange restaurantExchange() {
+        return new TopicExchange(restaurantExchangeName);
+    }
+
+    @Bean
+    public Queue kitchenOrdersQueue() {
+        return QueueBuilder.durable(kitchenOrdersQueueName).build();
+    }
+
+    @Bean
+    public Binding kitchenOrdersBinding() {
+        return BindingBuilder
+                .bind(kitchenOrdersQueue())
+                .to(restaurantExchange())
+                .with(kitchenOrdersRoutingKey);
+    }
+
     @Bean
     public RabbitMqEventPublisher EventPublisher(RabbitTemplate template) {
-        return new RabbitMqEventPublisher(template);
+        return new RabbitMqEventPublisher(template, restaurantExchangeName);
     }
 
     @Bean

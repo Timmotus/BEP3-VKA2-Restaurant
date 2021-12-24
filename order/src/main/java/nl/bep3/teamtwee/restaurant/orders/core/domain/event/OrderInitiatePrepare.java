@@ -7,11 +7,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class OrderInitiateDelivery extends OrderEvent {
+public class OrderInitiatePrepare extends OrderEvent {
     private final UUID orderId;
+    private final UUID reservationId;
 
     @Override
     public String getEventKey() {
-        return "delivery.order.create";
+        return "kitchen.order.prepare";
     }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -24,13 +23,11 @@ import lombok.AllArgsConstructor;
 import nl.teamtwee.bep3.restaurant.kitchen.core.application.OrdersCommandHandler;
 import nl.teamtwee.bep3.restaurant.kitchen.core.application.OrdersQueryHandler;
 import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.DeleteOrder;
-import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.ProceedWithOrder;
 import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.UpdateOrder;
 import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.UploadOrder;
 import nl.teamtwee.bep3.restaurant.kitchen.core.application.query.GetOrderById;
 import nl.teamtwee.bep3.restaurant.kitchen.core.application.query.ListOrders;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.Order;
-import nl.teamtwee.bep3.restaurant.kitchen.core.domain.OrderStatus;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.exception.OrderNotFoundException;
 import nl.teamtwee.bep3.restaurant.kitchen.core.domain.exception.OrderStatusException;
 import nl.teamtwee.bep3.restaurant.kitchen.infrastructure.driver.web.request.CreateOrderRequest;
@@ -75,16 +72,6 @@ public class KitchenController {
     public ResponseEntity<Void> deleteOrderById(@PathVariable UUID id) {
         this.commandHandler.handle(new DeleteOrder(id));
         return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/{id}/proceed")
-    public ResponseEntity<Order> proceedWithOrder(
-            @PathVariable UUID id,
-            @RequestParam(required = false) @Pattern(regexp = "RECEIVED|PREPARATION|BAKING|READY|COMPLETE") String orderStatus) {
-        return ResponseEntity.ok(
-                this.commandHandler.handle(new ProceedWithOrder(
-                        id,
-                        orderStatus == null ? null : OrderStatus.valueOf(orderStatus))));
     }
 
     // Handlers

@@ -1,20 +1,20 @@
 package nl.teamtwee.bep3.restaurant.kitchen.core.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import nl.teamtwee.bep3.restaurant.kitchen.core.application.command.OrderCompleted;
-import nl.teamtwee.bep3.restaurant.kitchen.core.domain.event.OrderEvent;
-import nl.teamtwee.bep3.restaurant.kitchen.core.domain.exception.OrderStatusException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import nl.teamtwee.bep3.restaurant.kitchen.core.domain.event.OrderEvent;
+import nl.teamtwee.bep3.restaurant.kitchen.core.domain.event.OrderPreparationCompleted;
+import nl.teamtwee.bep3.restaurant.kitchen.core.domain.event.OrderPreparationStarted;
 
 @Getter
 @Setter
@@ -22,9 +22,10 @@ import java.util.UUID;
 public class Order {
     @Id
     private UUID id;
+    private UUID orderId;
 
     private OrderStatus orderStatus;
-    private LocalDateTime receivedAt;
+    private LocalDateTime startedAt;
     private LocalDateTime completedAt;
     private List<OrderItem> orderItems;
 
@@ -32,21 +33,24 @@ public class Order {
     @Setter(value = AccessLevel.NONE)
     private final List<OrderEvent> events = new ArrayList<>();
 
-    public Order(List<OrderItem> orderItems) {
+    public Order(UUID orderId, List<OrderItem> orderItems) {
         this.id = UUID.randomUUID();
-        this.receivedAt = LocalDateTime.now();
+        this.orderId = orderId;
         this.orderStatus = OrderStatus.RECEIVED;
         this.orderItems = orderItems;
     }
 
     // Methods
-    public void proceed() {
-        if (this.orderStatus == OrderStatus.COMPLETE) throw new OrderStatusException("This order is finished and therefore cannot proceed!");
-        this.orderStatus = this.orderStatus.next();
+    public void prepare() {
+        this.orderStatus = OrderStatus.PREPARATION;
+        this.startedAt = LocalDateTime.now();
+        this.events.add(new OrderPreparationStarted(this.id, this.orderId));
     }
 
-    public void proceedTo(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    public void complete(LocalDateTime completedAt) {
+        this.orderStatus = OrderStatus.COMPLETE;
+        this.completedAt = completedAt;
+        this.events.add(new OrderPreparationCompleted(this.id, this.orderId));
     }
 
     // Event Methods
@@ -55,10 +59,5 @@ public class Order {
     }
     public List<OrderEvent> listEvents() {
         return events;
-    }
-
-    public void prepare(LocalDateTime completedAt) {
-        this.orderStatus = OrderStatus.COMPLETE;
-        this.completedAt = completedAt;
     }
 }

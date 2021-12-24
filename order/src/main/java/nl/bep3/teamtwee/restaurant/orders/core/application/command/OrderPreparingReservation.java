@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FailedOrderPayment {
+public class OrderPreparingReservation {
     private UUID orderId;
-    private UUID paymentId;
+    private UUID reservationId;
 }

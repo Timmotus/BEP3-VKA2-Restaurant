@@ -31,6 +31,12 @@ public class RabbitMqConfig {
     @Value("${messaging.routing-key.order-payments}")
     private String orderPaymentsRoutingKey;
 
+    @Value("${messaging.queue.order-kitchen}")
+    private String orderKitchenQueueName;
+
+    @Value("${messaging.routing-key.order-kitchen}")
+    private String orderKitchenRoutingKey;
+
     @Value("${messaging.queue.order-deliveries}")
     private String orderDeliveriesQueueName;
 
@@ -54,6 +60,20 @@ public class RabbitMqConfig {
                 .to(restaurantExchange())
                 .with(orderPaymentsRoutingKey);
     }
+    @Bean
+    public Queue orderKitchenQueue() {
+        return QueueBuilder.durable(orderKitchenQueueName).build();
+    }
+
+
+    @Bean
+    public Binding orderKitchenBinding() {
+        return BindingBuilder
+                .bind(orderKitchenQueue())
+                .to(restaurantExchange())
+                .with(orderKitchenRoutingKey);
+    }
+
     @Bean
     public Queue orderDeliveriesQueue() {
         return QueueBuilder.durable(orderDeliveriesQueueName).build();
